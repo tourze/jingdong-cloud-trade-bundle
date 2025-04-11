@@ -9,6 +9,7 @@
     "tourze/enum-extra": "0.0.*",
     "tourze/easy-admin-attribute": "0.0.*",
     "tourze/doctrine-indexed-bundle": "0.0.*",
+    "tourze/doctrine-timestamp-bundle": "0.0.*",
     "tourze/symfony-lock-command-bundle": "0.0.*"
   },
   "autoload": {

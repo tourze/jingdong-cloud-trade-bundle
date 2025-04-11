@@ -4,7 +4,6 @@ namespace JingdongCloudTradeBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use DoctrineEnhanceBundle\Repository\CommonRepositoryAware;
 use JingdongCloudTradeBundle\Entity\AfsService;
 
 /**
@@ -17,8 +16,6 @@ use JingdongCloudTradeBundle\Entity\AfsService;
  */
 class AfsServiceRepository extends ServiceEntityRepository
 {
-    use CommonRepositoryAware;
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AfsService::class);

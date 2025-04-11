@@ -11,8 +11,6 @@ services:
     resource: '../../Controller/'
   JingdongCloudTradeBundle\EventSubscriber\:
     resource: '../../EventSubscriber/'
-  JingdongCloudTradeBundle\Procedure\:
-    resource: '../../Procedure/'
   JingdongCloudTradeBundle\Repository\:
     resource: '../../Repository/'
   JingdongCloudTradeBundle\Service\:

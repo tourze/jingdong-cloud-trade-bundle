@@ -4,7 +4,6 @@ namespace JingdongCloudTradeBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use DoctrineEnhanceBundle\Repository\CommonRepositoryAware;
 use JingdongCloudTradeBundle\Entity\Logistics;
 
 /**
@@ -17,8 +16,6 @@ use JingdongCloudTradeBundle\Entity\Logistics;
  */
 class LogisticsRepository extends ServiceEntityRepository
 {
-    use CommonRepositoryAware;
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Logistics::class);
