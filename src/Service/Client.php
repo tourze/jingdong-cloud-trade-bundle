@@ -24,14 +24,14 @@ class Client
         ksort($params);
         $stringToBeSigned = $appSecret;
         foreach ($params as $k => $v) {
-            if ('@' !== mb_substr($v, 0, 1)) {
+            if (!str_starts_with($v, '@')) {
                 $stringToBeSigned .= "$k$v";
             }
         }
         unset($k, $v);
         $stringToBeSigned .= $appSecret;
 
-        return mb_strtoupper(md5($stringToBeSigned));
+        return strtoupper(md5($stringToBeSigned));
     }
 
     public function execute(Account $account, string $method, array $params = []): array
