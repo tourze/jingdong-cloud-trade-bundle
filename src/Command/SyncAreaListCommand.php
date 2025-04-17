@@ -36,7 +36,7 @@ class SyncAreaListCommand extends LockableCommand
                 'customerCode' => '010K398090'
             ],
         );
-        dd($response);
+        var_dump($response);
 
         return Command::SUCCESS;
     }
