@@ -281,6 +281,15 @@ class SkuService
     {
         $skuBigFieldInfo = $sku->getBigFieldInfo();
 
+        if (isset($bigFieldInfo['description'])) {
+            $skuBigFieldInfo->setDescription($bigFieldInfo['description']);
+        }
+        if (isset($bigFieldInfo['introduction'])) {
+            $skuBigFieldInfo->setIntroduction($bigFieldInfo['introduction']);
+        }
+        if (isset($bigFieldInfo['wReadMe'])) {
+            $skuBigFieldInfo->setWReadMe($bigFieldInfo['wReadMe']);
+        }
         if (isset($bigFieldInfo['pcWdis'])) {
             $skuBigFieldInfo->setPcWdis($bigFieldInfo['pcWdis']);
         }
@@ -305,11 +314,13 @@ class SkuService
         if (isset($bookInfo['id'])) {
             $skuBookInfo->setId($bookInfo['id']);
         }
-        if (isset($bookInfo['ISBN'])) {
-            $skuBookInfo->setIsbn($bookInfo['ISBN']);
+        if (isset($bookInfo['ISBN']) || isset($bookInfo['isbn'])) {
+            $isbn = $bookInfo['ISBN'] ?? $bookInfo['isbn'] ?? null;
+            $skuBookInfo->setIsbn($isbn);
         }
-        if (isset($bookInfo['ISSN'])) {
-            $skuBookInfo->setIssn($bookInfo['ISSN']);
+        if (isset($bookInfo['ISSN']) || isset($bookInfo['issn'])) {
+            $issn = $bookInfo['ISSN'] ?? $bookInfo['issn'] ?? null;
+            $skuBookInfo->setIssn($issn);
         }
         if (isset($bookInfo['barCode'])) {
             $skuBookInfo->setBarCode($bookInfo['barCode']);
