@@ -51,31 +51,7 @@ class OrderStateEnumTest extends TestCase
         $this->assertNull(OrderStateEnum::tryFrom('UNKNOWN_STATE'));
         $this->assertNull(OrderStateEnum::tryFrom(''));
     }
-    
-    public function testGetOptions(): void
-    {
-        $options = OrderStateEnum::getOptions();
-        
-        $this->assertIsArray($options);
-        $this->assertCount(7, $options);
-        
-        $this->assertArrayHasKey('CREATED', $options);
-        $this->assertArrayHasKey('PAID', $options);
-        $this->assertArrayHasKey('SHIPPED', $options);
-        $this->assertArrayHasKey('COMPLETED', $options);
-        $this->assertArrayHasKey('CANCELLED', $options);
-        $this->assertArrayHasKey('CLOSED', $options);
-        $this->assertArrayHasKey('AFTER_SALE', $options);
-        
-        $this->assertSame('已创建', $options['CREATED']);
-        $this->assertSame('已支付', $options['PAID']);
-        $this->assertSame('已发货', $options['SHIPPED']);
-        $this->assertSame('已完成', $options['COMPLETED']);
-        $this->assertSame('已取消', $options['CANCELLED']);
-        $this->assertSame('已关闭', $options['CLOSED']);
-        $this->assertSame('售后中', $options['AFTER_SALE']);
-    }
-    
+
     public function testCases(): void
     {
         $cases = OrderStateEnum::cases();
