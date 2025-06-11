@@ -171,7 +171,7 @@ class SkuSyncCommand extends Command
                 
                 $io->success("账户 {$account->getName()} 同步完成，共同步 {$syncedCount} 个商品");
                 
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $io->error("同步发生错误: " . $e->getMessage());
             }
         }
@@ -254,7 +254,7 @@ class SkuSyncCommand extends Command
                     }
                     
                     $syncedCount++;
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $io->note("商品 {$sku->getBaseInfo()->getSkuId()} 详情同步错误: " . $e->getMessage());
                     $hasError = true;
                 }
@@ -370,7 +370,7 @@ class SkuSyncCommand extends Command
                     
                     $this->entityManager->flush();
                     
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $io->note("价格同步错误: " . $e->getMessage());
                 }
                 
@@ -470,7 +470,7 @@ class SkuSyncCommand extends Command
                     
                     $this->entityManager->flush();
                     
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $io->note("库存同步错误: " . $e->getMessage());
                 }
                 
