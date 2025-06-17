@@ -84,8 +84,8 @@ class OrderItemTest extends TestCase
     
     public function testTimestampProperties(): void
     {
-        $createTime = new \DateTime();
-        $updateTime = new \DateTime();
+        $createTime = new \DateTimeImmutable();
+        $updateTime = new \DateTimeImmutable();
         
         $this->orderItem->setCreateTime($createTime);
         $this->orderItem->setUpdateTime($updateTime);
@@ -108,8 +108,8 @@ class OrderItemTest extends TestCase
         $totalPrice = '199.98';
         $imageUrl = 'https://example.com/img.jpg';
         $attributes = '{"color":"红色","size":"M"}';
-        $createTime = new \DateTime('2023-01-01 10:00:00');
-        $updateTime = new \DateTime('2023-01-02 11:00:00');
+        $createTime = new \DateTimeImmutable('2023-01-01 10:00:00');
+        $updateTime = new \DateTimeImmutable('2023-01-02 11:00:00');
         
         $this->orderItem->setOrder($this->order);
         $this->orderItem->setAccount($this->account);

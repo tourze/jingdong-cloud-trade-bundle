@@ -10,6 +10,7 @@ use JingdongCloudTradeBundle\Entity\Embedded\SkuBookInfo;
 use JingdongCloudTradeBundle\Entity\Embedded\SkuImageInfo;
 use JingdongCloudTradeBundle\Entity\Embedded\SkuSpecification;
 use JingdongCloudTradeBundle\Repository\SkuRepository;
+use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 use Tourze\EasyAdmin\Attribute\Column\ExportColumn;
 use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 

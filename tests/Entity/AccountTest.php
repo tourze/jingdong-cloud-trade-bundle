@@ -109,8 +109,8 @@ class AccountTest extends TestCase
     
     public function testTimestampProperties(): void
     {
-        $createTime = new \DateTime();
-        $updateTime = new \DateTime();
+        $createTime = new \DateTimeImmutable();
+        $updateTime = new \DateTimeImmutable();
         
         $this->account->setCreateTime($createTime);
         $this->account->setUpdateTime($updateTime);
