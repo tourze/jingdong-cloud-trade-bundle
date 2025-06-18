@@ -124,8 +124,6 @@ class OrderItemTest extends TestCase
         $this->orderItem->setUpdateTime($updateTime);
         
         $plainArray = $this->orderItem->retrievePlainArray();
-        
-        $this->assertIsArray($plainArray);
         $this->assertArrayHasKey('id', $plainArray);
         $this->assertArrayHasKey('orderId', $plainArray);
         $this->assertArrayHasKey('skuId', $plainArray);

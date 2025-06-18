@@ -8,15 +8,11 @@ use JingdongCloudTradeBundle\Repository\LogisticsRepository;
 use Tourze\Arrayable\PlainArrayInterface;
 use Tourze\DoctrineIndexedBundle\Attribute\IndexColumn;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
-use Tourze\EasyAdmin\Attribute\Column\ExportColumn;
-use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 
 #[ORM\Entity(repositoryClass: LogisticsRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_logistics', options: ['comment' => '京东云交易物流信息'])]
 class Logistics implements PlainArrayInterface
 {
-    #[ListColumn(order: -1)]
-    #[ExportColumn]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]

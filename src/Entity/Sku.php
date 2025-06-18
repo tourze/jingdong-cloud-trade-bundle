@@ -11,8 +11,6 @@ use JingdongCloudTradeBundle\Entity\Embedded\SkuImageInfo;
 use JingdongCloudTradeBundle\Entity\Embedded\SkuSpecification;
 use JingdongCloudTradeBundle\Repository\SkuRepository;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
-use Tourze\EasyAdmin\Attribute\Column\ExportColumn;
-use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 
 /**
  * 京东云交易商品SKU
@@ -23,8 +21,6 @@ use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 #[ORM\Table(name: 'jd_cloud_trade_sku', options: ['comment' => '京东云交易商品SKU'])]
 class Sku
 {
-    #[ListColumn(order: -1)]
-    #[ExportColumn]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]

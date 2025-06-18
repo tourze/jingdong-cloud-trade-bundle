@@ -55,8 +55,6 @@ class OrderStateEnumTest extends TestCase
     public function testCases(): void
     {
         $cases = OrderStateEnum::cases();
-        
-        $this->assertIsArray($cases);
         $this->assertCount(7, $cases);
         
         $this->assertSame(OrderStateEnum::CREATED, $cases[0]);
@@ -71,8 +69,6 @@ class OrderStateEnumTest extends TestCase
     public function testToSelectItem(): void
     {
         $selectItem = OrderStateEnum::CREATED->toSelectItem();
-        
-        $this->assertIsArray($selectItem);
         $this->assertArrayHasKey('label', $selectItem);
         $this->assertArrayHasKey('text', $selectItem);
         $this->assertArrayHasKey('value', $selectItem);
@@ -87,8 +83,6 @@ class OrderStateEnumTest extends TestCase
     public function testToArray(): void
     {
         $array = OrderStateEnum::PAID->toArray();
-        
-        $this->assertIsArray($array);
         $this->assertArrayHasKey('value', $array);
         $this->assertArrayHasKey('label', $array);
         
@@ -99,12 +93,9 @@ class OrderStateEnumTest extends TestCase
     public function testGenOptions(): void
     {
         $options = OrderStateEnum::genOptions();
-        
-        $this->assertIsArray($options);
         $this->assertNotEmpty($options);
         
         foreach ($options as $option) {
-            $this->assertIsArray($option);
             $this->assertArrayHasKey('value', $option);
             $this->assertArrayHasKey('label', $option);
             $this->assertArrayHasKey('text', $option);

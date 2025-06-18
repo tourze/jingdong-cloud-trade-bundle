@@ -7,8 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use JingdongCloudTradeBundle\Repository\CategoryRepository;
 use JsonSerializable;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
-use Tourze\EasyAdmin\Attribute\Column\ExportColumn;
-use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 
 /**
  * 京东商品分类
@@ -17,8 +15,6 @@ use Tourze\EasyAdmin\Attribute\Column\ListColumn;
 #[ORM\Table(name: 'jingdong_cloud_trade_category', options: ['comment' => '京东商品分类表'])]
 class Category implements JsonSerializable
 {
-    #[ListColumn(order: -1)]
-    #[ExportColumn]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]

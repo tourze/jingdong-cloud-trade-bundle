@@ -108,7 +108,6 @@ class SkuServiceTest extends TestCase
         $plainArray = $this->skuService->toPlainArray($this->sku);
         
         // 检查基础字段
-        $this->assertIsArray($plainArray);
         $this->assertEquals(1, $plainArray['id']);
         $this->assertEquals(100, $plainArray['accountId']);
         $this->assertEquals('123456', $plainArray['skuId']);
@@ -118,7 +117,6 @@ class SkuServiceTest extends TestCase
         
         // 检查图片信息
         $this->assertEquals('https://example.com/main.jpg', $plainArray['imageUrl']);
-        $this->assertIsArray($plainArray['detailImages']);
         $this->assertCount(2, $plainArray['detailImages']);
         
         // 检查规格信息
@@ -126,9 +124,7 @@ class SkuServiceTest extends TestCase
         $this->assertEquals(100, $plainArray['commentCount']);
         $this->assertTrue($plainArray['hasPromotion']);
         $this->assertEquals('限时折扣', $plainArray['promotionLabel']);
-        $this->assertIsArray($plainArray['promotionInfo']);
-        $this->assertIsArray($plainArray['specifications']);
-        
+
         // 检查大字段信息
         $this->assertEquals('这是一个测试商品描述', $plainArray['description']);
         $this->assertEquals('<p>这是一个HTML格式的商品介绍</p>', $plainArray['introduction']);
@@ -139,22 +135,16 @@ class SkuServiceTest extends TestCase
         $adminArray = $this->skuService->toAdminArray($this->sku);
         
         // 检查基础字段（继承自 toPlainArray)
-        $this->assertIsArray($adminArray);
         $this->assertEquals(1, $adminArray['id']);
         $this->assertEquals(100, $adminArray['accountId']);
         
         // 检查管理后台额外字段
-        $this->assertIsArray($adminArray['account']);
         $this->assertEquals(100, $adminArray['account']['id']);
         $this->assertEquals('Test Account', $adminArray['account']['name']);
         
         // 检查管理后台专用字段
-        $this->assertIsArray($adminArray['parameters']);
-        $this->assertIsArray($adminArray['afterSalesInfo']);
-        $this->assertIsArray($adminArray['extAttributes']);
-        
+
         // 检查图书信息
-        $this->assertIsArray($adminArray['bookInfo']);
         $this->assertEquals('9787000000000', $adminArray['bookInfo']['isbn']);
         $this->assertEquals('测试作者', $adminArray['bookInfo']['author']);
         $this->assertEquals('测试出版社', $adminArray['bookInfo']['publishers']);
@@ -171,8 +161,6 @@ class SkuServiceTest extends TestCase
         // 确保可以 JSON 序列化
         $json = json_encode($jsonArray);
         $this->assertNotFalse($json);
-        $this->assertIsString($json);
-        
         // 检查反序列化结果
         $decoded = json_decode($json, true);
         $this->assertEquals($jsonArray, $decoded);

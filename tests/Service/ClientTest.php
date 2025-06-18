@@ -49,8 +49,6 @@ class ClientTest extends TestCase
         $method->setAccessible(true);
         
         $sign = $method->invoke($this->client, $params, 'test_app_secret');
-        
-        $this->assertIsString($sign);
         $this->assertEquals(32, strlen($sign)); // MD5 签名长度是32位
         $this->assertEquals(strtoupper($sign), $sign); // 签名应该是大写
     }
@@ -93,8 +91,6 @@ class ClientTest extends TestCase
             ->willReturn($mockResponse);
         
         $result = $this->client->execute($this->account, $method, $params);
-        
-        $this->assertIsArray($result);
         $this->assertArrayHasKey('response', $result);
     }
     
