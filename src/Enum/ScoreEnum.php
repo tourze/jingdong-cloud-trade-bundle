@@ -2,11 +2,20 @@
 
 namespace JingdongCloudTradeBundle\Enum;
 
+use Tourze\EnumExtra\Itemable;
+use Tourze\EnumExtra\ItemTrait;
+use Tourze\EnumExtra\Labelable;
+use Tourze\EnumExtra\Selectable;
+use Tourze\EnumExtra\SelectTrait;
+
 /**
  * 京东云交易评分等级枚举
  */
-enum ScoreEnum: string
+enum ScoreEnum: string implements Itemable, Labelable, Selectable
 {
+    use ItemTrait;
+    use SelectTrait;
+
     /**
      * 1分 - 非常不满意
      */
@@ -44,6 +53,11 @@ enum ScoreEnum: string
             self::FOUR => '满意',
             self::FIVE => '非常满意',
         };
+    }
+
+    public function getLabel(): string
+    {
+        return $this->getDescription();
     }
     
     /**

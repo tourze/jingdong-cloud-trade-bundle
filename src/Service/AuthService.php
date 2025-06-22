@@ -61,12 +61,12 @@ class AuthService
             return;
         }
 
-        if ($account->getRefreshToken() && !$account->isRefreshTokenExpired()) {
+        if ($account->getRefreshToken() !== null && !$account->isRefreshTokenExpired()) {
             $this->refreshAccessToken($account);
             return;
         }
 
-        if (!$account->getCode() || $account->getCodeExpiresAt() < new \DateTimeImmutable()) {
+        if ($account->getCode() === null || $account->getCodeExpiresAt() < new \DateTimeImmutable()) {
             throw new \RuntimeException('No valid code available');
         }
 

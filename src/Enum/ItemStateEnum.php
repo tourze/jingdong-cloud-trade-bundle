@@ -2,11 +2,20 @@
 
 namespace JingdongCloudTradeBundle\Enum;
 
+use Tourze\EnumExtra\Itemable;
+use Tourze\EnumExtra\ItemTrait;
+use Tourze\EnumExtra\Labelable;
+use Tourze\EnumExtra\Selectable;
+use Tourze\EnumExtra\SelectTrait;
+
 /**
  * 京东云交易订单商品状态枚举
  */
-enum ItemStateEnum: string
+enum ItemStateEnum: string implements Itemable, Labelable, Selectable
 {
+    use ItemTrait;
+    use SelectTrait;
+
     /**
      * 正常
      */
@@ -44,6 +53,11 @@ enum ItemStateEnum: string
             self::EXCHANGING => '换货中',
             self::EXCHANGED => '已换货',
         };
+    }
+
+    public function getLabel(): string
+    {
+        return $this->getDescription();
     }
     
     /**

@@ -13,7 +13,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
  */
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: 'jingdong_cloud_trade_category', options: ['comment' => '京东商品分类表'])]
-class Category implements JsonSerializable
+class Category implements JsonSerializable, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,63 +29,33 @@ class Category implements JsonSerializable
     #[ORM\JoinColumn(nullable: false, options: ['comment' => '所属京东账户'])]
     private Account $account;
 
-    /**
-     * 分类ID
-     */
     #[ORM\Column(type: Types::STRING, length: 32, options: ['comment' => '京东分类ID'])]
     private string $categoryId;
 
-    /**
-     * 分类名称
-     */
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '分类名称'])]
     private string $categoryName;
 
-    /**
-     * 父分类ID
-     */
     #[ORM\Column(type: Types::STRING, length: 32, nullable: true, options: ['comment' => '父分类ID'])]
     private ?string $parentId = null;
 
-    /**
-     * 分类层级
-     */
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => '分类层级'])]
     private int $level;
 
-    /**
-     * 状态，0-无效 1-有效
-     */
     #[ORM\Column(type: Types::STRING, length: 1, options: ['default' => '1', 'comment' => '状态：0-无效，1-有效'])]
     private string $state = '1';
 
-    /**
-     * 图标
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '分类图标URL'])]
     private ?string $icon = null;
 
-    /**
-     * 排序
-     */
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0, 'comment' => '排序权重'])]
     private int $sort = 0;
 
-    /**
-     * 是否虚拟分类
-     */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false, 'comment' => '是否虚拟分类'])]
     private bool $isVirtual = false;
 
-    /**
-     * 分类描述
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '分类描述'])]
     private ?string $description = null;
 
-    /**
-     * 额外信息（JSON格式）
-     */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '额外信息（JSON格式）'])]
     private ?array $extraInfo = null;
 
@@ -259,5 +229,10 @@ class Category implements JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->retrievePlainArray();
+    }
+
+    public function __toString(): string
+    {
+        return $this->categoryName ?: sprintf('Category #%d', $this->id ?? 0);
     }
 }

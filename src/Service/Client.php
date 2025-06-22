@@ -10,7 +10,6 @@ class Client
     private string $serverUrl = 'https://api.jd.com/routerjson';
     private string $version = '2.0';
     private string $format = 'json';
-    private string $charset = 'UTF-8';
     private string $jsonParamKey = '360buy_param_json';
 
     public function __construct(
@@ -36,7 +35,7 @@ class Client
 
     public function execute(Account $account, string $method, array $params = []): array
     {
-        //$this->authService->getAccessToken($account);
+        $this->authService->getAccessToken($account);
 
         $systemParams = [
             'v' => $this->version,

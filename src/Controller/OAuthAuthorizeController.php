@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class OAuthController extends AbstractController
+class OAuthAuthorizeController extends AbstractController
 {
     public function __construct(
         private readonly AuthService $authService,
@@ -19,27 +19,8 @@ class OAuthController extends AbstractController
     ) {
     }
 
-    #[Route('/oauth/callback', name: 'jingdong_pop_oauth_callback')]
-    public function callback(Request $request): Response
-    {
-        $accountId = $request->getSession()->get('jingdong_pop_account_id');
-        if (!$accountId) {
-            throw new \RuntimeException('No account ID in session');
-        }
-
-        $account = $this->entityManager->find(Account::class, $accountId);
-        if (!$account) {
-            throw new \RuntimeException('Account not found');
-        }
-
-        $this->authService->handleCallback($account, $request);
-        $this->entityManager->flush();
-
-        return new Response('授权成功');
-    }
-
     #[Route('/oauth/authorize/{id}', name: 'jingdong_pop_oauth_authorize')]
-    public function authorize(Request $request, Account $account): Response
+    public function __invoke(Request $request, Account $account): Response
     {
         $redirectUri = $this->generateUrl('jingdong_pop_oauth_callback', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $url = $this->authService->getAuthorizationUrl($account, $redirectUri);

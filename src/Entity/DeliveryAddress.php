@@ -8,8 +8,7 @@ use JingdongCloudTradeBundle\Repository\DeliveryAddressRepository;
 use Tourze\Arrayable\PlainArrayInterface;
 use Tourze\DoctrineIndexedBundle\Attribute\IndexColumn;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
-use Tourze\DoctrineUserBundle\Attribute\CreatedByColumn;
-use Tourze\DoctrineUserBundle\Attribute\UpdatedByColumn;
+use Tourze\DoctrineUserBundle\Traits\BlameableAware;
 
 /**
  * 京东云交易收货地址
@@ -18,9 +17,10 @@ use Tourze\DoctrineUserBundle\Attribute\UpdatedByColumn;
  */
 #[ORM\Entity(repositoryClass: DeliveryAddressRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_delivery_address', options: ['comment' => '京东云交易收货地址'])]
-class DeliveryAddress implements PlainArrayInterface
+class DeliveryAddress implements PlainArrayInterface, \Stringable
 {
     use TimestampableAware;
+    use BlameableAware;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
@@ -33,92 +33,45 @@ class DeliveryAddress implements PlainArrayInterface
     #[ORM\JoinColumn(nullable: false)]
     private Account $account;
 
-    /**
-     * 收货人姓名
-     */
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人姓名'])]
     private string $receiverName;
 
-    /**
-     * 收货人手机号
-     */
     #[ORM\Column(type: Types::STRING, length: 20, options: ['comment' => '收货人手机号'])]
     #[IndexColumn]
     private string $receiverMobile;
 
-    /**
-     * 收货人固定电话
-     */
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '收货人固定电话'])]
     private ?string $receiverPhone = null;
 
-    /**
-     * 省份
-     */
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '省份'])]
     private string $province;
 
-    /**
-     * 城市
-     */
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '城市'])]
     private string $city;
 
-    /**
-     * 区县
-     */
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '区县'])]
     private string $county;
 
-    /**
-     * 街道/乡镇
-     */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '街道/乡镇'])]
     private ?string $town = null;
 
-    /**
-     * 详细地址
-     */
     #[ORM\Column(type: Types::STRING, length: 512, options: ['comment' => '详细地址'])]
     private string $detailAddress;
 
-    /**
-     * 邮政编码
-     */
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '邮政编码'])]
     private ?string $postCode = null;
 
-    /**
-     * 是否默认地址
-     */
     #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否默认地址'])]
     private bool $isDefault = false;
 
-    /**
-     * 地址标签（如家、公司等）
-     */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '地址标签（如家、公司等）'])]
     private ?string $addressTag = null;
 
-    /**
-     * 支持全球购
-     */
     #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '支持全球购'])]
     private bool $supportGlobalBuy = false;
 
-    /**
-     * 身份证号（全球购必填）
-     */
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '身份证号（全球购必填）'])]
     private ?string $idCardNo = null;
-
-    #[CreatedByColumn]
-    #[ORM\Column(nullable: true, options: ['comment' => '创建人'])]
-    private ?string $createdBy = null;
-
-    #[UpdatedByColumn]
-    #[ORM\Column(nullable: true, options: ['comment' => '更新人'])]
-    private ?string $updatedBy = null;
 
     public function getId(): ?int
     {
@@ -277,29 +230,6 @@ class DeliveryAddress implements PlainArrayInterface
         return $this;
     }
 
-    public function setCreatedBy(?string $createdBy): self
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    public function getCreatedBy(): ?string
-    {
-        return $this->createdBy;
-    }
-
-    public function setUpdatedBy(?string $updatedBy): self
-    {
-        $this->updatedBy = $updatedBy;
-
-        return $this;
-    }
-
-    public function getUpdatedBy(): ?string
-    {
-        return $this->updatedBy;
-    }
 
     /**
      * 获取完整地址
@@ -307,7 +237,7 @@ class DeliveryAddress implements PlainArrayInterface
     public function getFullAddress(): string
     {
         $address = $this->province . ' ' . $this->city . ' ' . $this->county;
-        if ($this->town) {
+        if ($this->town !== null && $this->town !== '') {
             $address .= ' ' . $this->town;
         }
         $address .= ' ' . $this->detailAddress;
@@ -336,5 +266,10 @@ class DeliveryAddress implements PlainArrayInterface
             'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
             'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s - %s', $this->receiverName, $this->getFullAddress());
     }
 } 

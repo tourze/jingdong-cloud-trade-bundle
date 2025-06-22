@@ -11,7 +11,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: OrderItemRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_order_item', options: ['comment' => '京东云交易订单商品项'])]
-class OrderItem implements PlainArrayInterface
+class OrderItem implements PlainArrayInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,26 +34,26 @@ class OrderItem implements PlainArrayInterface
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '商品ID(SkuId)'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '商品ID(SkuId)'])]
     #[IndexColumn]
     private string $skuId;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '商品名称'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '商品名称'])]
     private string $skuName;
 
-    #[ORM\Column(type: 'integer', options: ['comment' => '商品数量'])]
+    #[ORM\Column(type: Types::INTEGER, options: ['comment' => '商品数量'])]
     private int $quantity;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, options: ['comment' => '商品单价'])]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '商品单价'])]
     private string $price;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, options: ['comment' => '商品总价'])]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '商品总价'])]
     private string $totalPrice;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '商品图片URL'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '商品图片URL'])]
     private ?string $imageUrl = null;
 
-    #[ORM\Column(type: 'text', nullable: true, options: ['comment' => '商品属性(JSON格式)'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '商品属性(JSON格式)'])]
     private ?string $attributes = null;
 
     use TimestampableAware;
@@ -173,5 +173,10 @@ class OrderItem implements PlainArrayInterface
             'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
             'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s x%d', $this->skuName ?? 'Unknown Item', $this->quantity ?? 0);
     }
 } 

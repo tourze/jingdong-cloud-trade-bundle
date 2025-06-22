@@ -13,7 +13,7 @@ use Tourze\LockCommandBundle\Command\LockableCommand;
 /**
  * @see https://jos.jd.com/apilistnewdetail?apiGroupId=415&apiId=18573&apiName=null
  */
-#[AsCommand(name: SyncAreaListCommand::NAME, description: '同步Area信息')]
+#[AsCommand(name: self::NAME, description: '同步Area信息')]
 class SyncAreaListCommand extends LockableCommand
 {
     public const NAME = 'jingdong-pop:sync-area:list';

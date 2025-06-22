@@ -19,11 +19,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * 同步京东商品数据命令
  */
 #[AsCommand(
-    name: 'jingdong:sku:sync',
+    name: self::NAME,
     description: '同步京东商品数据'
 )]
 class SkuSyncCommand extends Command
 {
+    public const NAME = 'jingdong:sku:sync';
     public function __construct(
         private readonly Client $client,
         private readonly EntityManagerInterface $entityManager,
@@ -63,9 +64,9 @@ class SkuSyncCommand extends Command
         $syncStock = $input->getOption('stock');
 
         // 确定要使用的账户
-        if ($accountId) {
+        if ($accountId !== null) {
             $account = $this->accountRepository->find($accountId);
-            if (!$account) {
+            if ($account === null) {
                 $io->error("账户ID: {$accountId} 不存在");
                 return Command::FAILURE;
             }
@@ -96,11 +97,11 @@ class SkuSyncCommand extends Command
                         'pageSize' => $pageSize,
                     ];
 
-                    if ($categoryId) {
+                    if ($categoryId !== null) {
                         $params['cid3'] = $categoryId;
                     }
 
-                    if ($brandId) {
+                    if ($brandId !== null) {
                         $params['brandId'] = $brandId;
                     }
 
@@ -132,12 +133,12 @@ class SkuSyncCommand extends Command
                         $sku = $this->skuRepository->findBySkuId($skuId);
                         $isNew = false;
                         
-                        if (!$sku) {
+                        if ($sku === null) {
                             $sku = new Sku();
                             $sku->getBaseInfo()->setSkuId($skuId);
                             $sku->setAccount($account);
                             $isNew = true;
-                        } elseif (!$force && $sku->getUpdateTime() && (time() - $sku->getUpdateTime()->getTimestamp() < 86400)) {
+                        } elseif ($force !== true && $sku->getUpdateTime() !== null && (time() - $sku->getUpdateTime()->getTimestamp() < 86400)) {
                             // 如果不是强制更新且商品在1天内已更新过，则跳过
                             $io->progressAdvance();
                             continue;
@@ -177,17 +178,17 @@ class SkuSyncCommand extends Command
         }
 
         // 同步商品详情
-        if ($syncDetail) {
+        if ($syncDetail === true) {
             $this->syncSkuDetails($io, $accounts, $limit, $force);
         }
         
         // 同步商品价格
-        if ($syncPrice) {
+        if ($syncPrice === true) {
             $this->syncSkuPrices($io, $accounts, $limit, $force);
         }
         
         // 同步商品库存
-        if ($syncStock) {
+        if ($syncStock === true) {
             $this->syncSkuStocks($io, $accounts, $limit, $force);
         }
 
@@ -245,7 +246,7 @@ class SkuSyncCommand extends Command
                     }
 
                     $this->fillSkuDetailData($sku, $skuData);
-                    $sku->setDetailUpdatedAt(new \DateTime());
+                    $sku->setDetailUpdatedAt(new \DateTimeImmutable());
                     $this->entityManager->persist($sku);
                     
                     // 每50个商品保存一次
@@ -293,7 +294,7 @@ class SkuSyncCommand extends Command
                 $criteria['priceUpdatedAt'] = ['$lt' => $dateThreshold];
             }
 
-            $skus = $this->skuRepository->findBy($criteria, ['updatedAt' => 'DESC'], $limit);
+            $skus = $this->skuRepository->findBy($criteria, ['updateTime' => 'DESC'], $limit);
             
             if (empty($skus)) {
                 $io->info("账户 {$account->getName()} 没有需要同步价格的商品");
@@ -308,7 +309,7 @@ class SkuSyncCommand extends Command
             
             foreach ($skuBatches as $skuBatch) {
                 $skuIds = array_map(function ($sku) {
-                    return $sku->getSkuId();
+                    return $sku->getBaseInfo()->getSkuId();
                 }, $skuBatch);
                 
                 try {
@@ -341,16 +342,16 @@ class SkuSyncCommand extends Command
                     
                     // 更新商品价格信息
                     foreach ($skuBatch as $sku) {
-                        $skuId = $sku->getSkuId();
+                        $skuId = $sku->getBaseInfo()->getSkuId();
                         if (isset($priceMap[$skuId])) {
                             $priceData = $priceMap[$skuId];
-                            $sku->setPrice((string)($priceData['price'] ?? 0));
-                            $sku->setMarketPrice((string)($priceData['marketPrice'] ?? 0));
+                            $sku->getBaseInfo()->setPrice((string)($priceData['price'] ?? 0));
+                            $sku->getBaseInfo()->setMarketPrice((string)($priceData['marketPrice'] ?? 0));
                             
                             // 设置促销价格（如果有）
                             if (isset($priceData['promoPrice'])) {
-                                $sku->setPromoPrice((string)$priceData['promoPrice']);
-                                $sku->setHasPromotion(true);
+                                $sku->getSpecification()->setPromoPrice((string)$priceData['promoPrice']);
+                                $sku->getSpecification()->setHasPromotion(true);
                                 
                                 if (isset($priceData['promoStartTime']) && isset($priceData['promoEndTime'])) {
                                     $promoInfo = [
@@ -358,11 +359,11 @@ class SkuSyncCommand extends Command
                                         'startTime' => $priceData['promoStartTime'],
                                         'endTime' => $priceData['promoEndTime']
                                     ];
-                                    $sku->setPromotionInfo($promoInfo);
+                                    $sku->getSpecification()->setPromotionInfo($promoInfo);
                                 }
                             }
                             
-                            $sku->setPriceUpdatedAt(new \DateTime());
+                            $sku->getSpecification()->setPriceUpdatedAt(new \DateTime());
                             $this->entityManager->persist($sku);
                             $syncedCount++;
                         }
@@ -403,7 +404,7 @@ class SkuSyncCommand extends Command
                 $criteria['stockUpdatedAt'] = ['$lt' => $dateThreshold];
             }
 
-            $skus = $this->skuRepository->findBy($criteria, ['updatedAt' => 'DESC'], $limit);
+            $skus = $this->skuRepository->findBy($criteria, ['updateTime' => 'DESC'], $limit);
             
             if (empty($skus)) {
                 $io->info("账户 {$account->getName()} 没有需要同步库存的商品");
@@ -418,7 +419,7 @@ class SkuSyncCommand extends Command
             
             foreach ($skuBatches as $skuBatch) {
                 $skuIds = array_map(function ($sku) {
-                    return $sku->getSkuId();
+                    return $sku->getBaseInfo()->getSkuId();
                 }, $skuBatch);
                 
                 try {
@@ -451,18 +452,18 @@ class SkuSyncCommand extends Command
                     
                     // 更新商品库存信息
                     foreach ($skuBatch as $sku) {
-                        $skuId = $sku->getSkuId();
+                        $skuId = $sku->getBaseInfo()->getSkuId();
                         if (isset($stockMap[$skuId])) {
                             $stockData = $stockMap[$skuId];
-                            $sku->setStock($stockData['stockNum'] ?? 0);
+                            $sku->getBaseInfo()->setStock($stockData['stockNum'] ?? 0);
                             
                             // 更新仓库信息
                             if (isset($stockData['warehouseId'])) {
-                                $sku->setWarehouseId($stockData['warehouseId']);
-                                $sku->setWarehouseName($stockData['warehouseName'] ?? null);
+                                $sku->getBaseInfo()->setWarehouseId($stockData['warehouseId']);
+                                $sku->getBaseInfo()->setWarehouseName($stockData['warehouseName'] ?? null);
                             }
                             
-                            $sku->setStockUpdatedAt(new \DateTime());
+                            $sku->getSpecification()->setStockUpdatedAt(new \DateTime());
                             $this->entityManager->persist($sku);
                             $syncedCount++;
                         }

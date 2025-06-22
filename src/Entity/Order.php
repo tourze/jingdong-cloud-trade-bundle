@@ -14,7 +14,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_order', options: ['comment' => '京东云交易订单'])]
-class Order implements PlainArrayInterface, AdminArrayInterface
+class Order implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,59 +26,59 @@ class Order implements PlainArrayInterface, AdminArrayInterface
         return $this->id;
     }
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '京东订单号'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '京东订单号'])]
     #[IndexColumn]
     private string $orderId;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '订单状态'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '订单状态'])]
     private string $orderState;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '支付状态'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '支付状态'])]
     private string $paymentState;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '物流状态'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '物流状态'])]
     private string $logisticsState;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '收货人姓名'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人姓名'])]
     private string $receiverName;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '收货人手机号'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人手机号'])]
     private string $receiverMobile;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '收货人省份'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人省份'])]
     private string $receiverProvince;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '收货人城市'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人城市'])]
     private string $receiverCity;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '收货人区县'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人区县'])]
     private string $receiverCounty;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '收货人详细地址'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人详细地址'])]
     private string $receiverAddress;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, options: ['comment' => '订单总金额'])]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '订单总金额'])]
     private string $orderTotalPrice;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, options: ['comment' => '实付金额'])]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '实付金额'])]
     private string $orderPaymentPrice;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, options: ['comment' => '运费'])]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '运费'])]
     private string $freightPrice;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['comment' => '下单时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => '下单时间'])]
     private \DateTimeImmutable $orderTime;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '支付时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '支付时间'])]
     private ?\DateTimeImmutable $paymentTime = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '发货时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '发货时间'])]
     private ?\DateTimeImmutable $deliveryTime = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '完成时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '完成时间'])]
     private ?\DateTimeImmutable $finishTime = null;
 
-    #[ORM\Column(type: 'boolean', options: ['comment' => '是否已同步到京东'])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否已同步到京东'])]
     private bool $synced = false;
 
     #[ORM\ManyToOne(targetEntity: Account::class)]
@@ -88,7 +88,7 @@ class Order implements PlainArrayInterface, AdminArrayInterface
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, cascade: ['persist', 'remove'])]
     private Collection $items;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '运单号'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '运单号'])]
     private ?string $waybillCode = null;
 
     use TimestampableAware;
@@ -374,9 +374,9 @@ class Order implements PlainArrayInterface, AdminArrayInterface
             'receiverCounty' => $this->getReceiverCounty(),
             'receiverAddress' => $this->getReceiverAddress(),
             'orderTime' => $this->getOrderTime()->format('Y-m-d H:i:s'),
-            'paymentTime' => $this->getPaymentTime() ? $this->getPaymentTime()->format('Y-m-d H:i:s') : null,
-            'deliveryTime' => $this->getDeliveryTime() ? $this->getDeliveryTime()->format('Y-m-d H:i:s') : null,
-            'finishTime' => $this->getFinishTime() ? $this->getFinishTime()->format('Y-m-d H:i:s') : null,
+            'paymentTime' => $this->getPaymentTime()?->format('Y-m-d H:i:s'),
+            'deliveryTime' => $this->getDeliveryTime()?->format('Y-m-d H:i:s'),
+            'finishTime' => $this->getFinishTime()?->format('Y-m-d H:i:s'),
             'synced' => $this->isSynced(),
             'accountId' => $this->getAccount()->getId(),
         ];
@@ -390,5 +390,10 @@ class Order implements PlainArrayInterface, AdminArrayInterface
     public function retrieveAdminArray(): array
     {
         return $this->toAdminArray();
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('Order %s (¥%s)', $this->orderId ?? 'Unknown', $this->orderTotalPrice ?? '0.00');
     }
 }

@@ -2,11 +2,20 @@
 
 namespace JingdongCloudTradeBundle\Enum;
 
+use Tourze\EnumExtra\Itemable;
+use Tourze\EnumExtra\ItemTrait;
+use Tourze\EnumExtra\Labelable;
+use Tourze\EnumExtra\Selectable;
+use Tourze\EnumExtra\SelectTrait;
+
 /**
  * 京东云交易售后服务类型枚举
  */
-enum AfsTypeEnum: string
+enum AfsTypeEnum: string implements Itemable, Labelable, Selectable
 {
+    use ItemTrait;
+    use SelectTrait;
+
     /**
      * 退货
      */
@@ -38,6 +47,11 @@ enum AfsTypeEnum: string
             self::REPAIR => '维修',
             self::REFUND_ONLY => '仅退款',
         };
+    }
+    
+    public function getLabel(): string
+    {
+        return $this->getDescription();
     }
     
     /**

@@ -15,7 +15,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_invoice', options: ['comment' => '京东云交易发票信息'])]
-class Invoice implements PlainArrayInterface
+class Invoice implements PlainArrayInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,89 +38,47 @@ class Invoice implements PlainArrayInterface
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;
 
-    /**
-     * 发票类型
-     */
     #[ORM\Column(type: Types::STRING, length: 1, enumType: InvoiceTypeEnum::class, options: ['comment' => '发票类型'])]
     private InvoiceTypeEnum $invoiceType = InvoiceTypeEnum::ELECTRONIC;
 
-    /**
-     * 发票抬头类型
-     */
     #[ORM\Column(type: Types::STRING, length: 1, enumType: InvoiceTitleTypeEnum::class, options: ['comment' => '发票抬头类型'])]
     private InvoiceTitleTypeEnum $titleType = InvoiceTitleTypeEnum::PERSONAL;
 
-    /**
-     * 发票抬头
-     */
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '发票抬头'])]
     private string $title;
 
-    /**
-     * 纳税人识别号
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '纳税人识别号'])]
     private ?string $taxpayerIdentity = null;
 
-    /**
-     * 注册地址
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '注册地址'])]
     private ?string $registeredAddress = null;
 
-    /**
-     * 注册电话
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '注册电话'])]
     private ?string $registeredPhone = null;
 
-    /**
-     * 开户银行
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '开户银行'])]
     private ?string $bankName = null;
 
-    /**
-     * 银行账户
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '银行账户'])]
     private ?string $bankAccount = null;
 
-    /**
-     * 发票代码
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '发票代码'])]
     #[IndexColumn]
     private ?string $invoiceCode = null;
 
-    /**
-     * 发票号码
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '发票号码'])]
     #[IndexColumn]
     private ?string $invoiceNumber = null;
 
-    /**
-     * 发票金额
-     */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true, options: ['comment' => '发票金额'])]
     private ?string $invoiceAmount = null;
 
-    /**
-     * 发票状态
-     */
     #[ORM\Column(type: Types::STRING, length: 1, enumType: InvoiceStateEnum::class, nullable: true, options: ['comment' => '发票状态'])]
     private ?InvoiceStateEnum $invoiceState = InvoiceStateEnum::NOT_APPLIED;
 
-    /**
-     * 发票内容
-     */
     #[ORM\Column(type: Types::STRING, length: 1, enumType: InvoiceContentEnum::class, nullable: true, options: ['comment' => '发票内容'])]
     private ?InvoiceContentEnum $invoiceContent = InvoiceContentEnum::GOODS;
 
-    /**
-     * 电子发票下载URL
-     */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '电子发票下载URL'])]
     private ?string $downloadUrl = null;
 
@@ -329,5 +287,10 @@ class Invoice implements PlainArrayInterface
             'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
             'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('Invoice #%d - %s', $this->id ?? 0, $this->title ?? 'Untitled');
     }
 }

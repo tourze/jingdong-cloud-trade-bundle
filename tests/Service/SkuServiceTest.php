@@ -66,7 +66,7 @@ class SkuServiceTest extends TestCase
         
         // 初始化规格信息
         $specification = new SkuSpecification();
-        $specification->setScore(4.8);
+        $specification->setScore('4.8');
         $specification->setCommentCount(100);
         $specification->setHasPromotion(true);
         $specification->setPromotionLabel('限时折扣');

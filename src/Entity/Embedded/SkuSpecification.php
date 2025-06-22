@@ -13,7 +13,7 @@ class SkuSpecification
 {
     /**
      * 商品规格信息
-     * 
+     *
      * 格式:
      * [
      *   {
@@ -32,7 +32,7 @@ class SkuSpecification
 
     /**
      * 扩展属性
-     * 
+     *
      * 格式:
      * [
      *   {
@@ -85,6 +85,24 @@ class SkuSpecification
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '促销标签'])]
     private ?string $promotionLabel = null;
+
+    /**
+     * 促销价格
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true, options: ['comment' => '促销价格'])]
+    private ?string $promoPrice = null;
+
+    /**
+     * 价格更新时间
+     */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '价格更新时间'])]
+    private ?\DateTimeInterface $priceUpdatedAt = null;
+
+    /**
+     * 库存更新时间
+     */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '库存更新时间'])]
+    private ?\DateTimeInterface $stockUpdatedAt = null;
 
     // Getters and Setters
     public function getSpecifications(): ?array
@@ -186,6 +204,39 @@ class SkuSpecification
         return $this;
     }
 
+    public function getPromoPrice(): ?string
+    {
+        return $this->promoPrice;
+    }
+
+    public function setPromoPrice(?string $promoPrice): self
+    {
+        $this->promoPrice = $promoPrice;
+        return $this;
+    }
+
+    public function getPriceUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->priceUpdatedAt;
+    }
+
+    public function setPriceUpdatedAt(?\DateTimeInterface $priceUpdatedAt): self
+    {
+        $this->priceUpdatedAt = $priceUpdatedAt;
+        return $this;
+    }
+
+    public function getStockUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->stockUpdatedAt;
+    }
+
+    public function setStockUpdatedAt(?\DateTimeInterface $stockUpdatedAt): self
+    {
+        $this->stockUpdatedAt = $stockUpdatedAt;
+        return $this;
+    }
+
     /**
      * 转换为数组
      */
@@ -201,6 +252,9 @@ class SkuSpecification
             'promotionInfo' => $this->promotionInfo,
             'hasPromotion' => $this->hasPromotion,
             'promotionLabel' => $this->promotionLabel,
+            'promoPrice' => $this->promoPrice,
+            'priceUpdatedAt' => $this->priceUpdatedAt?->format('Y-m-d H:i:s'),
+            'stockUpdatedAt' => $this->stockUpdatedAt?->format('Y-m-d H:i:s'),
         ];
     }
 } 

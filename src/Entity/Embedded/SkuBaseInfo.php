@@ -910,17 +910,17 @@ class SkuBaseInfo
             'weight' => $this->weight,
             'saleAttrs' => $this->saleAttrs,
             'stock' => $this->stock,
-            'stockState' => $this->stockState ? [
+            'stockState' => [
                 'value' => $this->stockState->value,
                 'label' => $this->stockState->getLabel(),
-            ] : null,
-            'ownerType' => $this->ownerType ? [
+            ],
+            'ownerType' => $this->ownerType !== null ? [
                 'value' => $this->ownerType->value,
                 'label' => $this->ownerType->getLabel(),
             ] : null,
             'shopName' => $this->shopName,
             'vendorName' => $this->vendorName,
-            'deliveryType' => $this->deliveryType ? [
+            'deliveryType' => $this->deliveryType !== null ? [
                 'value' => $this->deliveryType->value,
                 'label' => $this->deliveryType->getLabel(),
             ] : null,
@@ -932,11 +932,11 @@ class SkuBaseInfo
             'colorSequence' => $this->colorSequence,
             'size' => $this->size,
             'sizeSequence' => $this->sizeSequence,
-            'is7ToReturn' => $this->is7ToReturn ? [
+            'is7ToReturn' => $this->is7ToReturn !== null ? [
                 'value' => $this->is7ToReturn->value,
                 'label' => $this->is7ToReturn->getLabel(),
             ] : null,
-            'is15ToReturn' => $this->is15ToReturn ? [
+            'is15ToReturn' => $this->is15ToReturn !== null ? [
                 'value' => $this->is15ToReturn->value,
                 'label' => $this->is15ToReturn->getLabel(),
             ] : null,
@@ -950,7 +950,7 @@ class SkuBaseInfo
             'height' => $this->height,
             'unit' => $this->unit,
             'upcCode' => $this->upcCode,
-            'isFlashSale' => $this->isFlashSale ? [
+            'isFlashSale' => $this->isFlashSale !== null ? [
                 'value' => $this->isFlashSale->value,
                 'label' => $this->isFlashSale->getLabel(),
             ] : null,

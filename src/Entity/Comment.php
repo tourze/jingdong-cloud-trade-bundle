@@ -11,7 +11,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_comment', options: ['comment' => '京东云交易订单评论'])]
-class Comment implements PlainArrayInterface, AdminArrayInterface
+class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,25 +38,25 @@ class Comment implements PlainArrayInterface, AdminArrayInterface
     #[ORM\JoinColumn(nullable: false)]
     private OrderItem $orderItem;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '评分：1-5分，1分最低，5分最高'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '评分：1-5分，1分最低，5分最高'])]
     private string $score;
 
-    #[ORM\Column(type: 'text', nullable: true, options: ['comment' => '评论内容'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '评论内容'])]
     private ?string $content = null;
 
-    #[ORM\Column(type: 'json', nullable: true, options: ['comment' => '评论图片URL列表'])]
+    #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '评论图片URL列表'])]
     private ?array $images = null;
 
-    #[ORM\Column(type: 'boolean', options: ['comment' => '是否匿名评论'])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否匿名评论'])]
     private bool $isAnonymous = false;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['comment' => '评论时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => '评论时间'])]
     private \DateTimeImmutable $commentTime;
 
-    #[ORM\Column(type: 'boolean', options: ['comment' => '是否通过审核'])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否通过审核'])]
     private bool $isApproved = false;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '审核时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '审核时间'])]
     private ?\DateTimeImmutable $approveTime = null;
 
     use TimestampableAware;
@@ -196,5 +196,10 @@ class Comment implements PlainArrayInterface, AdminArrayInterface
         return $this->retrievePlainArray() + [
             'approveTime' => $this->getApproveTime()?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('Comment #%d (Score: %s)', $this->id ?? 0, $this->score ?? 'N/A');
     }
 }

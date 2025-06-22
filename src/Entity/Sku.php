@@ -19,7 +19,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
  */
 #[ORM\Entity(repositoryClass: SkuRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_sku', options: ['comment' => '京东云交易商品SKU'])]
-class Sku
+class Sku implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -68,11 +68,8 @@ class Sku
     #[ORM\Embedded(class: SkuSpecification::class)]
     private SkuSpecification $specification;
     
-    /**
-     * 详情更新时间
-     */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '详情更新时间'])]
-    private ?\DateTimeInterface $detailUpdatedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '详情更新时间'])]
+    private ?\DateTimeImmutable $detailUpdatedAt = null;
 
     use TimestampableAware;
 
@@ -151,14 +148,19 @@ class Sku
         return $this;
     }
     
-    public function getDetailUpdatedAt(): ?\DateTimeInterface
+    public function getDetailUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->detailUpdatedAt;
     }
 
-    public function setDetailUpdatedAt(?\DateTimeInterface $detailUpdatedAt): self
+    public function setDetailUpdatedAt(?\DateTimeImmutable $detailUpdatedAt): self
     {
         $this->detailUpdatedAt = $detailUpdatedAt;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getBaseInfo()->getSkuName() ?: 'SKU-' . $this->getId();
     }
 }

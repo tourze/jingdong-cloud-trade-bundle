@@ -63,7 +63,7 @@ class SkuService
         $data['extAttributes'] = $specData['extAttributes'];
 
         // 图书信息（仅适用于图书）
-        if ($sku->getBookInfo()->getIsbn()) {
+        if ($sku->getBookInfo()->getIsbn() !== null) {
             $data['bookInfo'] = $sku->getBookInfo()->toArray();
         }
 

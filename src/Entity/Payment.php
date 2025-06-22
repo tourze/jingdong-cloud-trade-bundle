@@ -15,7 +15,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_payment', options: ['comment' => '京东云交易支付信息'])]
-class Payment implements PlainArrayInterface, AdminArrayInterface
+class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,46 +34,25 @@ class Payment implements PlainArrayInterface, AdminArrayInterface
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;
 
-    /**
-     * 支付流水号
-     */
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '支付流水号'])]
     #[IndexColumn]
     private string $paymentId;
 
-    /**
-     * 支付方式
-     */
     #[ORM\Column(type: Types::STRING, length: 1, enumType: PaymentMethodEnum::class, options: ['comment' => '支付方式'])]
     private PaymentMethodEnum $paymentMethod = PaymentMethodEnum::ONLINE;
 
-    /**
-     * 支付渠道
-     */
     #[ORM\Column(type: Types::STRING, length: 20, enumType: PaymentChannelEnum::class, nullable: true, options: ['comment' => '支付渠道'])]
     private ?PaymentChannelEnum $paymentChannel = null;
 
-    /**
-     * 支付金额
-     */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '支付金额'])]
     private string $paymentAmount;
 
-    /**
-     * 支付状态
-     */
     #[ORM\Column(type: Types::STRING, length: 1, enumType: PaymentStateEnum::class, options: ['comment' => '支付状态'])]
     private PaymentStateEnum $paymentState = PaymentStateEnum::PENDING;
 
-    /**
-     * 支付时间
-     */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '支付时间'])]
     private ?\DateTimeImmutable $paymentTime = null;
 
-    /**
-     * 支付备注
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '支付备注信息'])]
     private ?string $paymentNote = null;
 
@@ -180,7 +159,7 @@ class Payment implements PlainArrayInterface, AdminArrayInterface
             'paymentAmount' => $this->getPaymentAmount(),
             'paymentState' => $this->getPaymentState()->value,
             'paymentStateName' => $this->getPaymentState()->getLabel(),
-            'paymentTime' => $this->getPaymentTime() ? $this->getPaymentTime()->format('Y-m-d H:i:s') : null,
+            'paymentTime' => $this->getPaymentTime()?->format('Y-m-d H:i:s'),
             'paymentNote' => $this->getPaymentNote(),
             'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
             'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
@@ -192,5 +171,10 @@ class Payment implements PlainArrayInterface, AdminArrayInterface
         return $this->retrievePlainArray() + [
             'orderNumber' => $this->getOrder()->getOrderId(),
         ];
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('Payment %s (%s)', $this->paymentId, $this->paymentAmount);
     }
 }

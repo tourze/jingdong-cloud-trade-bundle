@@ -2,11 +2,20 @@
 
 namespace JingdongCloudTradeBundle\Enum;
 
+use Tourze\EnumExtra\Itemable;
+use Tourze\EnumExtra\ItemTrait;
+use Tourze\EnumExtra\Labelable;
+use Tourze\EnumExtra\Selectable;
+use Tourze\EnumExtra\SelectTrait;
+
 /**
  * 京东云交易售后服务状态枚举
  */
-enum AfsServiceStateEnum: string
+enum AfsServiceStateEnum: string implements Itemable, Labelable, Selectable
 {
+    use ItemTrait;
+    use SelectTrait;
+
     /**
      * 申请中
      */
@@ -50,6 +59,14 @@ enum AfsServiceStateEnum: string
             self::COMPLETED => '已完成',
             self::CANCELLED => '已取消',
         };
+    }
+
+    /**
+     * 获取标签
+     */
+    public function getLabel(): string
+    {
+        return $this->getDescription();
     }
     
     /**

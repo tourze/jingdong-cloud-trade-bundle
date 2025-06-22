@@ -12,7 +12,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: AfsServiceRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_afs_service', options: ['comment' => '京东云交易售后服务单'])]
-class AfsService implements PlainArrayInterface, AdminArrayInterface
+class AfsService implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,38 +35,38 @@ class AfsService implements PlainArrayInterface, AdminArrayInterface
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '京东售后服务单号'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '京东售后服务单号'])]
     #[IndexColumn]
     private string $afsServiceId;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '售后类型：10-退货，20-换货，30-维修'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '售后类型：10-退货，20-换货，30-维修'])]
     private string $afsType;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '服务单状态'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '服务单状态'])]
     private string $afsServiceState;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '申请原因'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '申请原因'])]
     private ?string $applyReason = null;
 
-    #[ORM\Column(type: 'text', nullable: true, options: ['comment' => '申请描述'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '申请描述'])]
     private ?string $applyDescription = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '申请时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '申请时间'])]
     private ?\DateTimeImmutable $applyTime = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '审核时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '审核时间'])]
     private ?\DateTimeImmutable $auditTime = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '完成时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '完成时间'])]
     private ?\DateTimeImmutable $completeTime = null;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true, options: ['comment' => '退款金额'])]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true, options: ['comment' => '退款金额'])]
     private ?string $refundAmount = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '物流公司'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '物流公司'])]
     private ?string $logisticsCompany = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '物流单号'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '物流单号'])]
     private ?string $logisticsNo = null;
 
     use TimestampableAware;
@@ -234,11 +234,16 @@ class AfsService implements PlainArrayInterface, AdminArrayInterface
         return $this->retrievePlainArray() + [
             'applyReason' => $this->getApplyReason(),
             'applyDescription' => $this->getApplyDescription(),
-            'applyTime' => $this->getApplyTime() ? $this->getApplyTime()->format('Y-m-d H:i:s') : null,
-            'auditTime' => $this->getAuditTime() ? $this->getAuditTime()->format('Y-m-d H:i:s') : null,
-            'completeTime' => $this->getCompleteTime() ? $this->getCompleteTime()->format('Y-m-d H:i:s') : null,
+            'applyTime' => $this->getApplyTime()?->format('Y-m-d H:i:s'),
+            'auditTime' => $this->getAuditTime()?->format('Y-m-d H:i:s'),
+            'completeTime' => $this->getCompleteTime()?->format('Y-m-d H:i:s'),
             'logisticsCompany' => $this->getLogisticsCompany(),
             'logisticsNo' => $this->getLogisticsNo(),
         ];
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('AfsService %s', $this->afsServiceId);
     }
 } 

@@ -8,8 +8,8 @@ use JingdongCloudTradeBundle\Repository\AreaRepository;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: AreaRepository::class)]
-#[ORM\Table(name: 'jd_area')]
-class Area
+#[ORM\Table(name: 'jd_area', options: ['comment' => '京东地区表'])]
+class Area implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,4 +22,9 @@ class Area
     }
 
     use TimestampableAware;
+
+    public function __toString(): string
+    {
+        return sprintf('Area #%d', $this->id ?? 0);
+    }
 }

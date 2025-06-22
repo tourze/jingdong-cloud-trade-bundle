@@ -149,7 +149,7 @@ class CategoryRepository extends ServiceEntityRepository
     private function buildCategoryPath(string $categoryId, array &$path): void
     {
         $category = $this->findByCategoryId($categoryId);
-        if (!$category) {
+        if ($category === null) {
             return;
         }
         
@@ -160,7 +160,7 @@ class CategoryRepository extends ServiceEntityRepository
             'level' => $category->getLevel(),
         ];
         
-        if ($category->getParentId()) {
+        if ($category->getParentId() !== null) {
             $this->buildCategoryPath($category->getParentId(), $path);
         }
     }

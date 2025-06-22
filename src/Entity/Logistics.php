@@ -11,7 +11,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: LogisticsRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_logistics', options: ['comment' => '京东云交易物流信息'])]
-class Logistics implements PlainArrayInterface
+class Logistics implements PlainArrayInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,20 +34,20 @@ class Logistics implements PlainArrayInterface
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '物流公司编码'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '物流公司编码'])]
     private string $logisticsCode;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '物流公司名称'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '物流公司名称'])]
     private string $logisticsName;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '物流单号'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '物流单号'])]
     #[IndexColumn]
     private string $waybillCode;
 
-    #[ORM\Column(type: 'text', nullable: true, options: ['comment' => '物流轨迹信息(JSON格式)'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '物流轨迹信息(JSON格式)'])]
     private ?string $trackInfo = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => '最后更新时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '最后更新时间'])]
     private ?\DateTimeImmutable $lastUpdateTime = null;
 
     use TimestampableAware;
@@ -142,5 +142,10 @@ class Logistics implements PlainArrayInterface
             'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
             'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s: %s', $this->logisticsName ?? 'Unknown Logistics', $this->waybillCode ?? 'No Waybill');
     }
 } 

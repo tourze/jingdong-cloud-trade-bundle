@@ -8,8 +8,8 @@ use JingdongCloudTradeBundle\Repository\AccountRepository;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
-#[ORM\Table(name: 'jd_account')]
-class Account
+#[ORM\Table(name: 'jd_account', options: ['comment' => '京东账户表'])]
+class Account implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,34 +21,34 @@ class Account
         return $this->id;
     }
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => '应用名称'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '应用名称'])]
     private string $name;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => 'AppKey'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => 'AppKey'])]
     private string $appKey;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['comment' => 'AppSecret'])]
+    #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => 'AppSecret'])]
     private string $appSecret;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => 'AccessToken'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => 'AccessToken'])]
     private ?string $accessToken = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => 'RefreshToken'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => 'RefreshToken'])]
     private ?string $refreshToken = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => 'AccessToken过期时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'AccessToken过期时间'])]
     private ?\DateTimeImmutable $accessTokenExpiresAt = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true, options: ['comment' => 'RefreshToken过期时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'RefreshToken过期时间'])]
     private ?\DateTimeImmutable $refreshTokenExpiresAt = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '授权码'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '授权码'])]
     private ?string $code = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '授权码过期时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '授权码过期时间'])]
     private ?\DateTimeImmutable $codeExpiresAt = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => '授权状态'])]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '授权状态'])]
     private ?string $state = null;
 
     use TimestampableAware;
@@ -179,5 +179,10 @@ class Account
         }
 
         return $this->refreshTokenExpiresAt < new \DateTimeImmutable();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }
