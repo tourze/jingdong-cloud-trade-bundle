@@ -8,7 +8,7 @@ use JingdongCloudTradeBundle\Entity\Comment;
 
 /**
  * 京东云交易订单评论仓储类
- * 
+ *
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
  * @method Comment|null findOneBy(array $criteria, array $orderBy = null)
  * @method Comment[] findAll()

@@ -3,6 +3,7 @@
 namespace JingdongCloudTradeBundle\Service;
 
 use JingdongCloudTradeBundle\Entity\Account;
+use JingdongCloudTradeBundle\Exception\OAuthException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -41,12 +42,12 @@ class AuthService
     {
         $state = $request->query->get('state');
         if ($state !== $account->getState()) {
-            throw new \RuntimeException('Invalid state');
+            throw new OAuthException('Invalid state');
         }
 
         $code = $request->query->get('code');
         if (!$code) {
-            throw new \RuntimeException('No code received');
+            throw new OAuthException('No code received');
         }
 
         $account->setCode($code);
@@ -67,7 +68,7 @@ class AuthService
         }
 
         if ($account->getCode() === null || $account->getCodeExpiresAt() < new \DateTimeImmutable()) {
-            throw new \RuntimeException('No valid code available');
+            throw new OAuthException('No valid code available');
         }
 
         $response = $this->httpClient->request('POST', self::TOKEN_URL, [
@@ -104,7 +105,7 @@ class AuthService
     private function updateTokens(Account $account, array $data): void
     {
         if (!isset($data['access_token'])) {
-            throw new \RuntimeException('No access token received');
+            throw new OAuthException('No access token received');
         }
 
         $account->setAccessToken($data['access_token']);

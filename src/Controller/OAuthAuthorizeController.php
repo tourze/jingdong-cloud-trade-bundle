@@ -19,7 +19,7 @@ class OAuthAuthorizeController extends AbstractController
     ) {
     }
 
-    #[Route('/oauth/authorize/{id}', name: 'jingdong_pop_oauth_authorize')]
+    #[Route(path: '/oauth/authorize/{id}', name: 'jingdong_pop_oauth_authorize')]
     public function __invoke(Request $request, Account $account): Response
     {
         $redirectUri = $this->generateUrl('jingdong_pop_oauth_callback', [], UrlGeneratorInterface::ABSOLUTE_URL);

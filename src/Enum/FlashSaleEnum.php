@@ -10,7 +10,7 @@ use Tourze\EnumExtra\SelectTrait;
 
 /**
  * 秒杀商品枚举
- * 
+ *
  * 参考京东API字段 isSecKill
  */
 enum FlashSaleEnum: int implements Labelable, Itemable, Selectable

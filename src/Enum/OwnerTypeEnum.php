@@ -10,7 +10,7 @@ use Tourze\EnumExtra\SelectTrait;
 
 /**
  * 店铺类型枚举
- * 
+ *
  * 参考：https://developer.jdcloud.com/article/4117
  */
 enum OwnerTypeEnum: string implements Labelable, Itemable, Selectable

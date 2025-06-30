@@ -3,6 +3,7 @@
 namespace JingdongCloudTradeBundle\Service;
 
 use JingdongCloudTradeBundle\Entity\Account;
+use JingdongCloudTradeBundle\Exception\ApiException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Client
@@ -57,7 +58,7 @@ class Client
         $result = $response->toArray();
 
         if (isset($result['error_response'])) {
-            throw new \RuntimeException($result['error_response']['zh_desc'] ?? '未知错误');
+            throw new ApiException($result['error_response']['zh_desc'] ?? '未知错误');
         }
 
         return $result;

@@ -8,7 +8,7 @@ use JingdongCloudTradeBundle\Entity\AfsService;
 
 /**
  * 京东云交易售后服务单仓储类
- * 
+ *
  * @method AfsService|null find($id, $lockMode = null, $lockVersion = null)
  * @method AfsService|null findOneBy(array $criteria, array $orderBy = null)
  * @method AfsService[] findAll()

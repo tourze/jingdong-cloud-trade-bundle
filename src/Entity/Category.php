@@ -233,6 +233,6 @@ class Category implements JsonSerializable, \Stringable
 
     public function __toString(): string
     {
-        return $this->categoryName ?: sprintf('Category #%d', $this->id ?? 0);
+        return $this->categoryName !== '' ? $this->categoryName : sprintf('Category #%d', $this->id ?? 0);
     }
 }

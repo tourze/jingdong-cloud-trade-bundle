@@ -161,6 +161,7 @@ class Sku implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getBaseInfo()->getSkuName() ?: 'SKU-' . $this->getId();
+        $skuName = $this->getBaseInfo()->getSkuName();
+        return $skuName !== '' ? $skuName : 'SKU-' . $this->getId();
     }
 }

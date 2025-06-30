@@ -8,7 +8,7 @@ use JingdongCloudTradeBundle\Entity\Invoice;
 
 /**
  * 京东云交易发票信息仓储类
- * 
+ *
  * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
  * @method Invoice|null findOneBy(array $criteria, array $orderBy = null)
  * @method Invoice[] findAll()

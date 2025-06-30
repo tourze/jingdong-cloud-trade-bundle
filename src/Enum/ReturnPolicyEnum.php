@@ -10,7 +10,7 @@ use Tourze\EnumExtra\SelectTrait;
 
 /**
  * 商品退货政策枚举
- * 
+ *
  * 参考京东API字段 is7ToReturn 和 is15ToReturn
  */
 enum ReturnPolicyEnum: int implements Labelable, Itemable, Selectable

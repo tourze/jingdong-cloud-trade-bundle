@@ -8,9 +8,9 @@ use JingdongCloudTradeBundle\Entity\DeliveryAddress;
 
 /**
  * 京东云交易收货地址仓储类
- * 
+ *
  * 参考文档：https://developer.jdcloud.com/article/4117
- * 
+ *
  * @method DeliveryAddress|null find($id, $lockMode = null, $lockVersion = null)
  * @method DeliveryAddress|null findOneBy(array $criteria, array $orderBy = null)
  * @method DeliveryAddress[] findAll()

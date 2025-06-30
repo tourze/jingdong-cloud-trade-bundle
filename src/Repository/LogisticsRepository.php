@@ -8,7 +8,7 @@ use JingdongCloudTradeBundle\Entity\Logistics;
 
 /**
  * 京东云交易物流信息仓储类
- * 
+ *
  * @method Logistics|null find($id, $lockMode = null, $lockVersion = null)
  * @method Logistics|null findOneBy(array $criteria, array $orderBy = null)
  * @method Logistics[] findAll()

@@ -3,6 +3,7 @@
 namespace JingdongCloudTradeBundle\Tests\Service;
 
 use JingdongCloudTradeBundle\Entity\Account;
+use JingdongCloudTradeBundle\Exception\OAuthException;
 use JingdongCloudTradeBundle\Service\AuthService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,7 +95,7 @@ class AuthServiceTest extends TestCase
         
         $request = Request::create('/?state=invalid_state&code=test_code');
         
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(OAuthException::class);
         $this->expectExceptionMessage('Invalid state');
         
         $this->authService->handleCallback($this->account, $request);
@@ -107,7 +108,7 @@ class AuthServiceTest extends TestCase
         
         $request = Request::create('/?state=' . $state);
         
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(OAuthException::class);
         $this->expectExceptionMessage('No code received');
         
         $this->authService->handleCallback($this->account, $request);
@@ -213,7 +214,7 @@ class AuthServiceTest extends TestCase
         $this->account->setCode('expired_code');
         $this->account->setCodeExpiresAt(new \DateTimeImmutable('-1 hour'));
         
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(OAuthException::class);
         $this->expectExceptionMessage('No valid code available');
         
         $this->authService->getAccessToken($this->account);
@@ -238,7 +239,7 @@ class AuthServiceTest extends TestCase
             ->method('request')
             ->willReturn($response);
             
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(OAuthException::class);
         $this->expectExceptionMessage('No access token received');
         
         $this->authService->getAccessToken($this->account);

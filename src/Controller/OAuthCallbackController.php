@@ -4,6 +4,8 @@ namespace JingdongCloudTradeBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use JingdongCloudTradeBundle\Entity\Account;
+use JingdongCloudTradeBundle\Exception\AccountNotFoundException;
+use JingdongCloudTradeBundle\Exception\OAuthException;
 use JingdongCloudTradeBundle\Service\AuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,17 +20,17 @@ class OAuthCallbackController extends AbstractController
     ) {
     }
 
-    #[Route('/oauth/callback', name: 'jingdong_pop_oauth_callback')]
+    #[Route(path: '/oauth/callback', name: 'jingdong_pop_oauth_callback')]
     public function __invoke(Request $request): Response
     {
         $accountId = $request->getSession()->get('jingdong_pop_account_id');
         if ($accountId === null) {
-            throw new \RuntimeException('No account ID in session');
+            throw new OAuthException('No account ID in session');
         }
 
         $account = $this->entityManager->find(Account::class, $accountId);
         if ($account === null) {
-            throw new \RuntimeException('Account not found');
+            throw new AccountNotFoundException('Account not found');
         }
 
         $this->authService->handleCallback($account, $request);

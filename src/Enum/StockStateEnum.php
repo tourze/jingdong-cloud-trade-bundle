@@ -10,7 +10,7 @@ use Tourze\EnumExtra\SelectTrait;
 
 /**
  * 库存状态枚举
- * 
+ *
  * 参考：https://developer.jdcloud.com/article/4117
  */
 enum StockStateEnum: string implements Labelable, Itemable, Selectable

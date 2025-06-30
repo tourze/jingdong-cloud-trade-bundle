@@ -3,6 +3,7 @@
 namespace JingdongCloudTradeBundle\Tests\Service;
 
 use JingdongCloudTradeBundle\Entity\Account;
+use JingdongCloudTradeBundle\Exception\ApiException;
 use JingdongCloudTradeBundle\Service\AuthService;
 use JingdongCloudTradeBundle\Service\Client;
 use PHPUnit\Framework\TestCase;
@@ -111,7 +112,7 @@ class ClientTest extends TestCase
             ->method('request')
             ->willReturn($mockResponse);
             
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(ApiException::class);
         $this->expectExceptionMessage('请求参数错误');
         
         $this->client->execute($this->account, $method, $params);
@@ -134,7 +135,7 @@ class ClientTest extends TestCase
             ->method('request')
             ->willReturn($mockResponse);
             
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(ApiException::class);
         $this->expectExceptionMessage('未知错误');
         
         $this->client->execute($this->account, $method, $params);

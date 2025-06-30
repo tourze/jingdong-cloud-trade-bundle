@@ -10,7 +10,7 @@ use Tourze\EnumExtra\SelectTrait;
 
 /**
  * 配送方式枚举
- * 
+ *
  * 参考：https://developer.jdcloud.com/article/4117
  */
 enum DeliveryTypeEnum: string implements Labelable, Itemable, Selectable
