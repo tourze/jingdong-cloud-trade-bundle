@@ -17,15 +17,33 @@ enum OwnerTypeEnum: string implements Labelable, Itemable, Selectable
 {
     use ItemTrait;
     use SelectTrait;
-    
-    case SELF_OPERATED = 'g';  // 自营
-    case POP = 'p';            // POP店铺
+
+    case SELF_OPERATED = 'g';
+    case POP = 'p';
 
     public function getLabel(): string
     {
-        return match($this) {
-            self::SELF_OPERATED => '自营',
+        return match ($this) {
+            self::SELF_OPERATED => '自营店铺',
             self::POP => 'POP店铺',
         };
     }
-} 
+
+    /**
+     * 获取所有枚举的选项数组（用于下拉列表等）
+     *
+     * @return array<int, array{value: string, label: string}>
+     */
+    public static function toSelectItems(): array
+    {
+        $result = [];
+        foreach (self::cases() as $case) {
+            $result[] = [
+                'value' => $case->value,
+                'label' => $case->getLabel(),
+            ];
+        }
+
+        return $result;
+    }
+}

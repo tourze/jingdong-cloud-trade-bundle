@@ -5,63 +5,76 @@ namespace JingdongCloudTradeBundle\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JingdongCloudTradeBundle\Repository\AccountRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
 #[ORM\Table(name: 'jd_account', options: ['comment' => '京东账户表'])]
 class Account implements \Stringable
 {
+    use TimestampableAware;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
-    private ?int $id = 0;
+    private int $id = 0;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '应用名称'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $name;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => 'AppKey'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $appKey;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => 'AppSecret'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $appSecret;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => 'AccessToken'])]
+    #[Assert\Length(max: 255)]
     private ?string $accessToken = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => 'RefreshToken'])]
+    #[Assert\Length(max: 255)]
     private ?string $refreshToken = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'AccessToken过期时间'])]
-    private ?\DateTimeImmutable $accessTokenExpiresAt = null;
+    #[Assert\Type(type: \DateTimeImmutable::class)]
+    private ?\DateTimeImmutable $accessTokenExpireTime = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'RefreshToken过期时间'])]
-    private ?\DateTimeImmutable $refreshTokenExpiresAt = null;
+    #[Assert\Type(type: \DateTimeImmutable::class)]
+    private ?\DateTimeImmutable $refreshTokenExpireTime = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '授权码'])]
+    #[Assert\Length(max: 255)]
     private ?string $code = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '授权码过期时间'])]
-    private ?\DateTimeImmutable $codeExpiresAt = null;
+    #[Assert\Type(type: \DateTimeImmutable::class)]
+    private ?\DateTimeImmutable $codeExpireTime = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '授权状态'])]
+    #[Assert\Length(max: 255)]
     private ?string $state = null;
-
-    use TimestampableAware;
 
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): void
     {
         $this->name = $name;
-        return $this;
     }
 
     public function getAppKey(): string
@@ -69,10 +82,9 @@ class Account implements \Stringable
         return $this->appKey;
     }
 
-    public function setAppKey(string $appKey): self
+    public function setAppKey(string $appKey): void
     {
         $this->appKey = $appKey;
-        return $this;
     }
 
     public function getAppSecret(): string
@@ -80,10 +92,9 @@ class Account implements \Stringable
         return $this->appSecret;
     }
 
-    public function setAppSecret(string $appSecret): self
+    public function setAppSecret(string $appSecret): void
     {
         $this->appSecret = $appSecret;
-        return $this;
     }
 
     public function getAccessToken(): ?string
@@ -91,10 +102,9 @@ class Account implements \Stringable
         return $this->accessToken;
     }
 
-    public function setAccessToken(?string $accessToken): self
+    public function setAccessToken(?string $accessToken): void
     {
         $this->accessToken = $accessToken;
-        return $this;
     }
 
     public function getRefreshToken(): ?string
@@ -102,32 +112,29 @@ class Account implements \Stringable
         return $this->refreshToken;
     }
 
-    public function setRefreshToken(?string $refreshToken): self
+    public function setRefreshToken(?string $refreshToken): void
     {
         $this->refreshToken = $refreshToken;
-        return $this;
     }
 
-    public function getAccessTokenExpiresAt(): ?\DateTimeImmutable
+    public function getAccessTokenExpireTime(): ?\DateTimeImmutable
     {
-        return $this->accessTokenExpiresAt;
+        return $this->accessTokenExpireTime;
     }
 
-    public function setAccessTokenExpiresAt(?\DateTimeImmutable $accessTokenExpiresAt): self
+    public function setAccessTokenExpireTime(?\DateTimeImmutable $accessTokenExpireTime): void
     {
-        $this->accessTokenExpiresAt = $accessTokenExpiresAt;
-        return $this;
+        $this->accessTokenExpireTime = $accessTokenExpireTime;
     }
 
-    public function getRefreshTokenExpiresAt(): ?\DateTimeImmutable
+    public function getRefreshTokenExpireTime(): ?\DateTimeImmutable
     {
-        return $this->refreshTokenExpiresAt;
+        return $this->refreshTokenExpireTime;
     }
 
-    public function setRefreshTokenExpiresAt(?\DateTimeImmutable $refreshTokenExpiresAt): self
+    public function setRefreshTokenExpireTime(?\DateTimeImmutable $refreshTokenExpireTime): void
     {
-        $this->refreshTokenExpiresAt = $refreshTokenExpiresAt;
-        return $this;
+        $this->refreshTokenExpireTime = $refreshTokenExpireTime;
     }
 
     public function getCode(): ?string
@@ -135,21 +142,19 @@ class Account implements \Stringable
         return $this->code;
     }
 
-    public function setCode(?string $code): self
+    public function setCode(?string $code): void
     {
         $this->code = $code;
-        return $this;
     }
 
-    public function getCodeExpiresAt(): ?\DateTimeImmutable
+    public function getCodeExpireTime(): ?\DateTimeImmutable
     {
-        return $this->codeExpiresAt;
+        return $this->codeExpireTime;
     }
 
-    public function setCodeExpiresAt(?\DateTimeImmutable $codeExpiresAt): self
+    public function setCodeExpireTime(?\DateTimeImmutable $codeExpireTime): void
     {
-        $this->codeExpiresAt = $codeExpiresAt;
-        return $this;
+        $this->codeExpireTime = $codeExpireTime;
     }
 
     public function getState(): ?string
@@ -157,28 +162,57 @@ class Account implements \Stringable
         return $this->state;
     }
 
-    public function setState(?string $state): self
+    public function setState(?string $state): void
     {
         $this->state = $state;
-        return $this;
     }
 
     public function isAccessTokenExpired(): bool
     {
-        if (null === $this->accessTokenExpiresAt) {
+        if (null === $this->accessTokenExpireTime) {
             return true;
         }
 
-        return $this->accessTokenExpiresAt < new \DateTimeImmutable();
+        return $this->accessTokenExpireTime < new \DateTimeImmutable();
     }
 
     public function isRefreshTokenExpired(): bool
     {
-        if (null === $this->refreshTokenExpiresAt) {
+        if (null === $this->refreshTokenExpireTime) {
             return true;
         }
 
-        return $this->refreshTokenExpiresAt < new \DateTimeImmutable();
+        return $this->refreshTokenExpireTime < new \DateTimeImmutable();
+    }
+
+    public function getAccessTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->getAccessTokenExpireTime();
+    }
+
+    public function setAccessTokenExpiresAt(?\DateTimeImmutable $accessTokenExpiresAt): void
+    {
+        $this->setAccessTokenExpireTime($accessTokenExpiresAt);
+    }
+
+    public function getRefreshTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->getRefreshTokenExpireTime();
+    }
+
+    public function setRefreshTokenExpiresAt(?\DateTimeImmutable $refreshTokenExpiresAt): void
+    {
+        $this->setRefreshTokenExpireTime($refreshTokenExpiresAt);
+    }
+
+    public function getCodeExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->getCodeExpireTime();
+    }
+
+    public function setCodeExpiresAt(?\DateTimeImmutable $codeExpiresAt): void
+    {
+        $this->setCodeExpireTime($codeExpiresAt);
     }
 
     public function __toString(): string

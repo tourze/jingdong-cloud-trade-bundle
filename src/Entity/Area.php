@@ -11,20 +11,20 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 #[ORM\Table(name: 'jd_area', options: ['comment' => '京东地区表'])]
 class Area implements \Stringable
 {
+    use TimestampableAware;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
-    private ?int $id = 0;
+    private int $id = 0;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    use TimestampableAware;
-
     public function __toString(): string
     {
-        return sprintf('Area #%d', $this->id ?? 0);
+        return sprintf('Area #%d', $this->id);
     }
 }

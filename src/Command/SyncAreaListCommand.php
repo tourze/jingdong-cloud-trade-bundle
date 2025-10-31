@@ -27,16 +27,22 @@ class SyncAreaListCommand extends LockableCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $account = $this->accountRepository->findOneValid();
+        if (null === $account) {
+            $output->writeln('<error>No valid account found</error>');
+
+            return Command::FAILURE;
+        }
+
         // 地址是通用的，我们拿一个来读取即可
         $response = $this->client->execute(
-            $this->accountRepository->findOneValid(),
+            $account,
             'jingdong.ldop.receive.trace.get',
             [
-                'waybillCode' => "JDV019645978415",
-                'customerCode' => '010K398090'
+                'waybillCode' => 'JDV019645978415',
+                'customerCode' => '010K398090',
             ],
         );
-        var_dump($response);
 
         return Command::SUCCESS;
     }

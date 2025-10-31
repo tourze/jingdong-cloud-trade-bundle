@@ -6,15 +6,17 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
 use JingdongCloudTradeBundle\Entity\Order;
 use JingdongCloudTradeBundle\Service\Client;
+use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: Order::class)]
 #[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: Order::class)]
-class OrderSubscriber
+#[WithMonologChannel(channel: 'jingdong_cloud_trade')]
+readonly class OrderSubscriber
 {
     public function __construct(
-        private readonly Client $client,
-        private readonly LoggerInterface $logger,
+        private Client $client,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -42,7 +44,7 @@ class OrderSubscriber
                 'orderTime' => $order->getOrderTime()->format('Y-m-d H:i:s'),
                 'paymentTime' => $order->getPaymentTime()?->format('Y-m-d H:i:s'),
                 'deliveryTime' => $order->getDeliveryTime()?->format('Y-m-d H:i:s'),
-                'finishTime' => $order->getFinishTime()?->format('Y-m-d H:i:s'),
+                'finishTime' => $order->getCompletionTime()?->format('Y-m-d H:i:s'),
             ]);
 
             $order->setSynced(true);
@@ -80,7 +82,7 @@ class OrderSubscriber
                 'orderTime' => $order->getOrderTime()->format('Y-m-d H:i:s'),
                 'paymentTime' => $order->getPaymentTime()?->format('Y-m-d H:i:s'),
                 'deliveryTime' => $order->getDeliveryTime()?->format('Y-m-d H:i:s'),
-                'finishTime' => $order->getFinishTime()?->format('Y-m-d H:i:s'),
+                'finishTime' => $order->getCompletionTime()?->format('Y-m-d H:i:s'),
             ]);
 
             $order->setSynced(true);

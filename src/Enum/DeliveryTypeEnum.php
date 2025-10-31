@@ -18,12 +18,12 @@ enum DeliveryTypeEnum: string implements Labelable, Itemable, Selectable
     use ItemTrait;
     use SelectTrait;
 
-    case JD_DELIVERY = '1';      // 京东配送
-    case NON_JD_DELIVERY = '0';  // 非京东配送
+    case JD_DELIVERY = '1';
+    case NON_JD_DELIVERY = '0';
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::JD_DELIVERY => '京东配送',
             self::NON_JD_DELIVERY => '非京东配送',
         };

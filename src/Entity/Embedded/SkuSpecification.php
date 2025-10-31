@@ -4,6 +4,7 @@ namespace JingdongCloudTradeBundle\Entity\Embedded;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * 京东商品规格和属性信息
@@ -26,8 +27,11 @@ class SkuSpecification
      *     ]
      *   }
      * ]
+     *
+     * @var array<int, array<string, mixed>>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '商品规格信息'])]
+    #[Assert\Type(type: 'array')]
     private ?array $specifications = null;
 
     /**
@@ -40,26 +44,36 @@ class SkuSpecification
      *     "valNames": ["属性名"]
      *   }
      * ]
+     *
+     * @var array<int, array<string, mixed>>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '扩展属性'])]
+    #[Assert\Type(type: 'array')]
     private ?array $extAttributes = null;
 
     /**
      * 参数信息
+     *
+     * @var array<int, array<string, mixed>>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '参数信息'])]
+    #[Assert\Type(type: 'array')]
     private ?array $parameters = null;
 
     /**
      * 售后信息
+     *
+     * @var array<int, array<string, mixed>>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '售后信息'])]
+    #[Assert\Type(type: 'array')]
     private ?array $afterSalesInfo = null;
 
     /**
      * 商品评分
      */
     #[ORM\Column(type: Types::STRING, length: 10, nullable: true, options: ['comment' => '商品评分'])]
+    #[Assert\Length(max: 10)]
     private ?string $score = null;
 
     /**
@@ -70,8 +84,11 @@ class SkuSpecification
 
     /**
      * 促销信息
+     *
+     * @var array<int, array<string, mixed>>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '促销信息'])]
+    #[Assert\Type(type: 'array')]
     private ?array $promotionInfo = null;
 
     /**
@@ -84,69 +101,93 @@ class SkuSpecification
      * 促销标签
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '促销标签'])]
+    #[Assert\Length(max: 255)]
     private ?string $promotionLabel = null;
 
     /**
      * 促销价格
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true, options: ['comment' => '促销价格'])]
+    #[Assert\Regex(pattern: '/^\d+(\.\d{1,2})?$/')]
     private ?string $promoPrice = null;
 
     /**
      * 价格更新时间
      */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '价格更新时间'])]
-    private ?\DateTimeInterface $priceUpdatedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '价格更新时间'])]
+    #[Assert\Type(type: \DateTimeInterface::class)]
+    private ?\DateTimeInterface $priceUpdateTime = null;
 
     /**
      * 库存更新时间
      */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '库存更新时间'])]
-    private ?\DateTimeInterface $stockUpdatedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '库存更新时间'])]
+    #[Assert\Type(type: \DateTimeInterface::class)]
+    private ?\DateTimeInterface $stockUpdateTime = null;
 
     // Getters and Setters
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
     public function getSpecifications(): ?array
     {
         return $this->specifications;
     }
 
-    public function setSpecifications(?array $specifications): self
+    /**
+     * @param array<int, array<string, mixed>>|null $specifications
+     */
+    public function setSpecifications(?array $specifications): void
     {
         $this->specifications = $specifications;
-        return $this;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
     public function getExtAttributes(): ?array
     {
         return $this->extAttributes;
     }
 
-    public function setExtAttributes(?array $extAttributes): self
+    /**
+     * @param array<int, array<string, mixed>>|null $extAttributes
+     */
+    public function setExtAttributes(?array $extAttributes): void
     {
         $this->extAttributes = $extAttributes;
-        return $this;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
     public function getParameters(): ?array
     {
         return $this->parameters;
     }
 
-    public function setParameters(?array $parameters): self
+    /**
+     * @param array<int, array<string, mixed>>|null $parameters
+     */
+    public function setParameters(?array $parameters): void
     {
         $this->parameters = $parameters;
-        return $this;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
     public function getAfterSalesInfo(): ?array
     {
         return $this->afterSalesInfo;
     }
 
-    public function setAfterSalesInfo(?array $afterSalesInfo): self
+    /**
+     * @param array<int, array<string, mixed>>|null $afterSalesInfo
+     */
+    public function setAfterSalesInfo(?array $afterSalesInfo): void
     {
         $this->afterSalesInfo = $afterSalesInfo;
-        return $this;
     }
 
     public function getScore(): ?string
@@ -154,10 +195,9 @@ class SkuSpecification
         return $this->score;
     }
 
-    public function setScore(?string $score): self
+    public function setScore(?string $score): void
     {
         $this->score = $score;
-        return $this;
     }
 
     public function getCommentCount(): ?int
@@ -165,21 +205,25 @@ class SkuSpecification
         return $this->commentCount;
     }
 
-    public function setCommentCount(?int $commentCount): self
+    public function setCommentCount(?int $commentCount): void
     {
         $this->commentCount = $commentCount;
-        return $this;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
     public function getPromotionInfo(): ?array
     {
         return $this->promotionInfo;
     }
 
-    public function setPromotionInfo(?array $promotionInfo): self
+    /**
+     * @param array<int, array<string, mixed>>|null $promotionInfo
+     */
+    public function setPromotionInfo(?array $promotionInfo): void
     {
         $this->promotionInfo = $promotionInfo;
-        return $this;
     }
 
     public function hasPromotion(): bool
@@ -187,10 +231,9 @@ class SkuSpecification
         return $this->hasPromotion;
     }
 
-    public function setHasPromotion(bool $hasPromotion): self
+    public function setHasPromotion(bool $hasPromotion): void
     {
         $this->hasPromotion = $hasPromotion;
-        return $this;
     }
 
     public function getPromotionLabel(): ?string
@@ -198,10 +241,9 @@ class SkuSpecification
         return $this->promotionLabel;
     }
 
-    public function setPromotionLabel(?string $promotionLabel): self
+    public function setPromotionLabel(?string $promotionLabel): void
     {
         $this->promotionLabel = $promotionLabel;
-        return $this;
     }
 
     public function getPromoPrice(): ?string
@@ -209,36 +251,35 @@ class SkuSpecification
         return $this->promoPrice;
     }
 
-    public function setPromoPrice(?string $promoPrice): self
+    public function setPromoPrice(?string $promoPrice): void
     {
         $this->promoPrice = $promoPrice;
-        return $this;
     }
 
-    public function getPriceUpdatedAt(): ?\DateTimeInterface
+    public function getPriceUpdateTime(): ?\DateTimeInterface
     {
-        return $this->priceUpdatedAt;
+        return $this->priceUpdateTime;
     }
 
-    public function setPriceUpdatedAt(?\DateTimeInterface $priceUpdatedAt): self
+    public function setPriceUpdateTime(?\DateTimeInterface $priceUpdateTime): void
     {
-        $this->priceUpdatedAt = $priceUpdatedAt;
-        return $this;
+        $this->priceUpdateTime = $priceUpdateTime;
     }
 
-    public function getStockUpdatedAt(): ?\DateTimeInterface
+    public function getStockUpdateTime(): ?\DateTimeInterface
     {
-        return $this->stockUpdatedAt;
+        return $this->stockUpdateTime;
     }
 
-    public function setStockUpdatedAt(?\DateTimeInterface $stockUpdatedAt): self
+    public function setStockUpdateTime(?\DateTimeInterface $stockUpdateTime): void
     {
-        $this->stockUpdatedAt = $stockUpdatedAt;
-        return $this;
+        $this->stockUpdateTime = $stockUpdateTime;
     }
 
     /**
      * 转换为数组
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -253,8 +294,8 @@ class SkuSpecification
             'hasPromotion' => $this->hasPromotion,
             'promotionLabel' => $this->promotionLabel,
             'promoPrice' => $this->promoPrice,
-            'priceUpdatedAt' => $this->priceUpdatedAt?->format('Y-m-d H:i:s'),
-            'stockUpdatedAt' => $this->stockUpdatedAt?->format('Y-m-d H:i:s'),
+            'priceUpdateTime' => $this->priceUpdateTime?->format('Y-m-d H:i:s'),
+            'stockUpdateTime' => $this->stockUpdateTime?->format('Y-m-d H:i:s'),
         ];
     }
-} 
+}

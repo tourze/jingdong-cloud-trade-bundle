@@ -2,6 +2,7 @@
 
 namespace JingdongCloudTradeBundle\Enum;
 
+use Tourze\EnumExtra\BadgeInterface;
 use Tourze\EnumExtra\Itemable;
 use Tourze\EnumExtra\ItemTrait;
 use Tourze\EnumExtra\Labelable;
@@ -13,7 +14,7 @@ use Tourze\EnumExtra\SelectTrait;
  *
  * 参考文档：https://developer.jdcloud.com/article/4117
  */
-enum OrderStateEnum: string implements Labelable, Itemable, Selectable
+enum OrderStateEnum: string implements Labelable, Itemable, Selectable, BadgeInterface
 {
     use ItemTrait;
     use SelectTrait;
@@ -28,7 +29,7 @@ enum OrderStateEnum: string implements Labelable, Itemable, Selectable
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::CREATED => '已创建',
             self::PAID => '已支付',
             self::SHIPPED => '已发货',
@@ -40,14 +41,33 @@ enum OrderStateEnum: string implements Labelable, Itemable, Selectable
     }
 
     /**
-     * 获取所有状态选项（用于表单选择）
+     * 获取所有枚举的选项数组（用于下拉列表等）
+     *
+     * @return array<int, array{value: string, label: string}>
      */
-    public static function getOptions(): array
+    public static function toSelectItems(): array
     {
-        $options = [];
+        $result = [];
         foreach (self::cases() as $case) {
-            $options[$case->value] = $case->getLabel();
+            $result[] = [
+                'value' => $case->value,
+                'label' => $case->getLabel(),
+            ];
         }
-        return $options;
+
+        return $result;
+    }
+
+    public function getBadge(): string
+    {
+        return match ($this) {
+            self::CREATED => self::INFO,
+            self::PAID => self::PRIMARY,
+            self::SHIPPED => self::WARNING,
+            self::COMPLETED => self::SUCCESS,
+            self::CANCELLED => self::SECONDARY,
+            self::CLOSED => self::DARK,
+            self::AFTER_SALE => self::OUTLINE,
+        };
     }
 }

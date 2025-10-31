@@ -3,33 +3,39 @@
 namespace JingdongCloudTradeBundle\Tests\Enum;
 
 use JingdongCloudTradeBundle\Enum\OrderStateEnum;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
+use Tourze\PHPUnitEnum\AbstractEnumTestCase;
 
-class OrderStateEnumTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(OrderStateEnum::class)]
+final class OrderStateEnumTest extends AbstractEnumTestCase
 {
-    public function testOrderStateEnumValues(): void
+    #[TestWith([OrderStateEnum::CREATED, 'CREATED', '已创建'])]
+    #[TestWith([OrderStateEnum::PAID, 'PAID', '已支付'])]
+    #[TestWith([OrderStateEnum::SHIPPED, 'SHIPPED', '已发货'])]
+    #[TestWith([OrderStateEnum::COMPLETED, 'COMPLETED', '已完成'])]
+    #[TestWith([OrderStateEnum::CANCELLED, 'CANCELLED', '已取消'])]
+    #[TestWith([OrderStateEnum::CLOSED, 'CLOSED', '已关闭'])]
+    #[TestWith([OrderStateEnum::AFTER_SALE, 'AFTER_SALE', '售后中'])]
+    public function testValueAndLabel(OrderStateEnum $enum, string $value, string $label): void
     {
-        $this->assertSame('CREATED', OrderStateEnum::CREATED->value);
-        $this->assertSame('PAID', OrderStateEnum::PAID->value);
-        $this->assertSame('SHIPPED', OrderStateEnum::SHIPPED->value);
-        $this->assertSame('COMPLETED', OrderStateEnum::COMPLETED->value);
-        $this->assertSame('CANCELLED', OrderStateEnum::CANCELLED->value);
-        $this->assertSame('CLOSED', OrderStateEnum::CLOSED->value);
-        $this->assertSame('AFTER_SALE', OrderStateEnum::AFTER_SALE->value);
+        $this->assertSame($value, $enum->value);
+        $this->assertSame($label, $enum->getLabel());
     }
-    
-    public function testGetLabel(): void
+
+    public function testToArray(): void
     {
-        $this->assertSame('已创建', OrderStateEnum::CREATED->getLabel());
-        $this->assertSame('已支付', OrderStateEnum::PAID->getLabel());
-        $this->assertSame('已发货', OrderStateEnum::SHIPPED->getLabel());
-        $this->assertSame('已完成', OrderStateEnum::COMPLETED->getLabel());
-        $this->assertSame('已取消', OrderStateEnum::CANCELLED->getLabel());
-        $this->assertSame('已关闭', OrderStateEnum::CLOSED->getLabel());
-        $this->assertSame('售后中', OrderStateEnum::AFTER_SALE->getLabel());
+        $expected = [
+            'value' => 'CREATED',
+            'label' => '已创建',
+        ];
+        $this->assertSame($expected, OrderStateEnum::CREATED->toArray());
     }
-    
-    public function testFromValue(): void
+
+    public function testFromWithValidValue(): void
     {
         $this->assertSame(OrderStateEnum::CREATED, OrderStateEnum::from('CREATED'));
         $this->assertSame(OrderStateEnum::PAID, OrderStateEnum::from('PAID'));
@@ -39,70 +45,27 @@ class OrderStateEnumTest extends TestCase
         $this->assertSame(OrderStateEnum::CLOSED, OrderStateEnum::from('CLOSED'));
         $this->assertSame(OrderStateEnum::AFTER_SALE, OrderStateEnum::from('AFTER_SALE'));
     }
-    
-    public function testTryFromValue_validValue(): void
+
+    public function testTryFromWithValidValue(): void
     {
         $this->assertSame(OrderStateEnum::CREATED, OrderStateEnum::tryFrom('CREATED'));
         $this->assertSame(OrderStateEnum::PAID, OrderStateEnum::tryFrom('PAID'));
-    }
-    
-    public function testTryFromValue_invalidValue(): void
-    {
-        $this->assertNull(OrderStateEnum::tryFrom('UNKNOWN_STATE'));
-        $this->assertNull(OrderStateEnum::tryFrom(''));
+        $this->assertSame(OrderStateEnum::SHIPPED, OrderStateEnum::tryFrom('SHIPPED'));
+        $this->assertSame(OrderStateEnum::COMPLETED, OrderStateEnum::tryFrom('COMPLETED'));
+        $this->assertSame(OrderStateEnum::CANCELLED, OrderStateEnum::tryFrom('CANCELLED'));
+        $this->assertSame(OrderStateEnum::CLOSED, OrderStateEnum::tryFrom('CLOSED'));
+        $this->assertSame(OrderStateEnum::AFTER_SALE, OrderStateEnum::tryFrom('AFTER_SALE'));
     }
 
-    public function testCases(): void
+    public function testUniqueValues(): void
     {
-        $cases = OrderStateEnum::cases();
-        $this->assertCount(7, $cases);
-        
-        $this->assertSame(OrderStateEnum::CREATED, $cases[0]);
-        $this->assertSame(OrderStateEnum::PAID, $cases[1]);
-        $this->assertSame(OrderStateEnum::SHIPPED, $cases[2]);
-        $this->assertSame(OrderStateEnum::COMPLETED, $cases[3]);
-        $this->assertSame(OrderStateEnum::CANCELLED, $cases[4]);
-        $this->assertSame(OrderStateEnum::CLOSED, $cases[5]);
-        $this->assertSame(OrderStateEnum::AFTER_SALE, $cases[6]);
+        $values = array_map(fn ($case) => $case->value, OrderStateEnum::cases());
+        $this->assertSame(count($values), count(array_unique($values)));
     }
-    
-    public function testToSelectItem(): void
+
+    public function testUniqueLabels(): void
     {
-        $selectItem = OrderStateEnum::CREATED->toSelectItem();
-        $this->assertArrayHasKey('label', $selectItem);
-        $this->assertArrayHasKey('text', $selectItem);
-        $this->assertArrayHasKey('value', $selectItem);
-        $this->assertArrayHasKey('name', $selectItem);
-        
-        $this->assertEquals('已创建', $selectItem['label']);
-        $this->assertEquals('已创建', $selectItem['text']);
-        $this->assertEquals('CREATED', $selectItem['value']);
-        $this->assertEquals('已创建', $selectItem['name']);
+        $labels = array_map(fn ($case) => $case->getLabel(), OrderStateEnum::cases());
+        $this->assertSame(count($labels), count(array_unique($labels)));
     }
-    
-    public function testToArray(): void
-    {
-        $array = OrderStateEnum::PAID->toArray();
-        $this->assertArrayHasKey('value', $array);
-        $this->assertArrayHasKey('label', $array);
-        
-        $this->assertEquals('PAID', $array['value']);
-        $this->assertEquals('已支付', $array['label']);
-    }
-    
-    public function testGenOptions(): void
-    {
-        $options = OrderStateEnum::genOptions();
-        $this->assertNotEmpty($options);
-        
-        foreach ($options as $option) {
-            $this->assertArrayHasKey('value', $option);
-            $this->assertArrayHasKey('label', $option);
-            $this->assertArrayHasKey('text', $option);
-            $this->assertArrayHasKey('name', $option);
-            
-            $enum = OrderStateEnum::from($option['value']);
-            $this->assertSame($enum->getLabel(), $option['label']);
-        }
-    }
-} 
+}

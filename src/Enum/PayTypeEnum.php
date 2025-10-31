@@ -11,46 +11,37 @@ use Tourze\EnumExtra\SelectTrait;
 /**
  * 京东云交易支付类型枚举
  */
-enum PayTypeEnum: string implements Itemable, Labelable, Selectable
+enum PayTypeEnum: string implements Labelable, Itemable, Selectable
 {
     use ItemTrait;
     use SelectTrait;
 
-    /**
-     * 在线支付
-     */
     case ONLINE = 'ONLINE';
-    
-    /**
-     * 货到付款
-     */
     case COD = 'COD';
-    
-    /**
-     * 获取类型描述
-     */
-    public function getDescription(): string
+
+    public function getLabel(): string
     {
-        return match($this) {
-            self::ONLINE => '在线支付',
+        return match ($this) {
+            self::ONLINE => '在线付款',
             self::COD => '货到付款',
         };
     }
 
-    public function getLabel(): string
-    {
-        return $this->getDescription();
-    }
-    
     /**
-     * 获取所有类型选项（用于表单选择）
+     * 获取所有枚举的选项数组（用于下拉列表等）
+     *
+     * @return array<int, array{value: string, label: string}>
      */
-    public static function getOptions(): array
+    public static function toSelectItems(): array
     {
-        $options = [];
+        $result = [];
         foreach (self::cases() as $case) {
-            $options[$case->value] = $case->getDescription();
+            $result[] = [
+                'value' => $case->value,
+                'label' => $case->getLabel(),
+            ];
         }
-        return $options;
+
+        return $result;
     }
-} 
+}

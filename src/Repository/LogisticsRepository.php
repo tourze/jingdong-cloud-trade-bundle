@@ -5,15 +5,14 @@ namespace JingdongCloudTradeBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use JingdongCloudTradeBundle\Entity\Logistics;
+use Tourze\PHPUnitSymfonyKernelTest\Attribute\AsRepository;
 
 /**
  * 京东云交易物流信息仓储类
  *
- * @method Logistics|null find($id, $lockMode = null, $lockVersion = null)
- * @method Logistics|null findOneBy(array $criteria, array $orderBy = null)
- * @method Logistics[] findAll()
- * @method Logistics[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Logistics>
  */
+#[AsRepository(entityClass: Logistics::class)]
 class LogisticsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -31,9 +30,27 @@ class LogisticsRepository extends ServiceEntityRepository
 
     /**
      * 根据订单ID查询物流信息
+     *
+     * @return Logistics[]
      */
     public function findByOrderId(int $orderId): array
     {
         return $this->findBy(['order' => $orderId]);
     }
-} 
+
+    public function save(Logistics $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Logistics $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+}

@@ -5,15 +5,14 @@ namespace JingdongCloudTradeBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use JingdongCloudTradeBundle\Entity\AfsService;
+use Tourze\PHPUnitSymfonyKernelTest\Attribute\AsRepository;
 
 /**
  * 京东云交易售后服务单仓储类
  *
- * @method AfsService|null find($id, $lockMode = null, $lockVersion = null)
- * @method AfsService|null findOneBy(array $criteria, array $orderBy = null)
- * @method AfsService[] findAll()
- * @method AfsService[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<AfsService>
  */
+#[AsRepository(entityClass: AfsService::class)]
 class AfsServiceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -31,9 +30,27 @@ class AfsServiceRepository extends ServiceEntityRepository
 
     /**
      * 根据订单ID查询售后服务单
+     *
+     * @return AfsService[]
      */
     public function findByOrderId(int $orderId): array
     {
         return $this->findBy(['order' => $orderId]);
     }
-} 
+
+    public function save(AfsService $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(AfsService $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+}

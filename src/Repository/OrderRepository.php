@@ -5,15 +5,14 @@ namespace JingdongCloudTradeBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use JingdongCloudTradeBundle\Entity\Order;
+use Tourze\PHPUnitSymfonyKernelTest\Attribute\AsRepository;
 
 /**
  * 京东云交易订单仓储类
  *
- * @method Order|null find($id, $lockMode = null, $lockVersion = null)
- * @method Order|null findOneBy(array $criteria, array $orderBy = null)
- * @method Order[] findAll()
- * @method Order[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Order>
  */
+#[AsRepository(entityClass: Order::class)]
 class OrderRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -31,9 +30,27 @@ class OrderRepository extends ServiceEntityRepository
 
     /**
      * 根据账户ID查询订单
+     *
+     * @return Order[]
      */
     public function findByAccountId(int $accountId): array
     {
         return $this->findBy(['account' => $accountId], ['createTime' => 'DESC']);
     }
-} 
+
+    public function save(Order $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Order $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+}

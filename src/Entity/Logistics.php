@@ -5,20 +5,26 @@ namespace JingdongCloudTradeBundle\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JingdongCloudTradeBundle\Repository\LogisticsRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Tourze\Arrayable\PlainArrayInterface;
 use Tourze\DoctrineIndexedBundle\Attribute\IndexColumn;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
+/**
+ * @implements PlainArrayInterface<string, mixed>
+ */
 #[ORM\Entity(repositoryClass: LogisticsRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_logistics', options: ['comment' => '京东云交易物流信息'])]
 class Logistics implements PlainArrayInterface, \Stringable
 {
+    use TimestampableAware;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
-    private ?int $id = 0;
+    private int $id = 0;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -26,41 +32,46 @@ class Logistics implements PlainArrayInterface, \Stringable
     /**
      * 关联京东账户
      */
-    #[ORM\ManyToOne(targetEntity: Account::class)]
+    #[ORM\ManyToOne(targetEntity: Account::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private Account $account;
 
-    #[ORM\ManyToOne(targetEntity: Order::class)]
+    #[ORM\ManyToOne(targetEntity: Order::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '物流公司编码'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $logisticsCode;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '物流公司名称'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $logisticsName;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '物流单号'])]
     #[IndexColumn]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $waybillCode;
 
     #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '物流轨迹信息(JSON格式)'])]
+    #[Assert\Length(max: 65535)]
     private ?string $trackInfo = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '最后更新时间'])]
-    private ?\DateTimeImmutable $lastUpdateTime = null;
-
-    use TimestampableAware;
+    #[Assert\Type(type: \DateTimeImmutable::class)]
+    private ?\DateTimeImmutable $lastModificationTime = null;
 
     public function getOrder(): Order
     {
         return $this->order;
     }
 
-    public function setOrder(Order $order): self
+    public function setOrder(Order $order): void
     {
         $this->order = $order;
-        return $this;
     }
 
     public function getLogisticsCode(): string
@@ -68,10 +79,9 @@ class Logistics implements PlainArrayInterface, \Stringable
         return $this->logisticsCode;
     }
 
-    public function setLogisticsCode(string $logisticsCode): self
+    public function setLogisticsCode(string $logisticsCode): void
     {
         $this->logisticsCode = $logisticsCode;
-        return $this;
     }
 
     public function getLogisticsName(): string
@@ -79,10 +89,9 @@ class Logistics implements PlainArrayInterface, \Stringable
         return $this->logisticsName;
     }
 
-    public function setLogisticsName(string $logisticsName): self
+    public function setLogisticsName(string $logisticsName): void
     {
         $this->logisticsName = $logisticsName;
-        return $this;
     }
 
     public function getWaybillCode(): string
@@ -90,10 +99,9 @@ class Logistics implements PlainArrayInterface, \Stringable
         return $this->waybillCode;
     }
 
-    public function setWaybillCode(string $waybillCode): self
+    public function setWaybillCode(string $waybillCode): void
     {
         $this->waybillCode = $waybillCode;
-        return $this;
     }
 
     public function getTrackInfo(): ?string
@@ -101,21 +109,19 @@ class Logistics implements PlainArrayInterface, \Stringable
         return $this->trackInfo;
     }
 
-    public function setTrackInfo(?string $trackInfo): self
+    public function setTrackInfo(?string $trackInfo): void
     {
         $this->trackInfo = $trackInfo;
-        return $this;
     }
 
-    public function getLastUpdateTime(): ?\DateTimeImmutable
+    public function getLastModificationTime(): ?\DateTimeImmutable
     {
-        return $this->lastUpdateTime;
+        return $this->lastModificationTime;
     }
 
-    public function setLastUpdateTime(?\DateTimeImmutable $lastUpdateTime): self
+    public function setLastModificationTime(?\DateTimeImmutable $lastModificationTime): void
     {
-        $this->lastUpdateTime = $lastUpdateTime;
-        return $this;
+        $this->lastModificationTime = $lastModificationTime;
     }
 
     public function getAccount(): Account
@@ -123,12 +129,14 @@ class Logistics implements PlainArrayInterface, \Stringable
         return $this->account;
     }
 
-    public function setAccount(Account $account): self
+    public function setAccount(Account $account): void
     {
         $this->account = $account;
-        return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrievePlainArray(): array
     {
         return [
@@ -137,7 +145,7 @@ class Logistics implements PlainArrayInterface, \Stringable
             'logisticsCode' => $this->getLogisticsCode(),
             'logisticsName' => $this->getLogisticsName(),
             'waybillCode' => $this->getWaybillCode(),
-            'lastUpdateTime' => $this->getLastUpdateTime()?->format('Y-m-d H:i:s'),
+            'lastUpdateTime' => $this->getLastModificationTime()?->format('Y-m-d H:i:s'),
             'accountId' => $this->getAccount()->getId(),
             'createTime' => $this->getCreateTime()?->format('Y-m-d H:i:s'),
             'updateTime' => $this->getUpdateTime()?->format('Y-m-d H:i:s'),
@@ -148,4 +156,4 @@ class Logistics implements PlainArrayInterface, \Stringable
     {
         return sprintf('%s: %s', $this->logisticsName ?? 'Unknown Logistics', $this->waybillCode ?? 'No Waybill');
     }
-} 
+}

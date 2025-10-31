@@ -5,15 +5,14 @@ namespace JingdongCloudTradeBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use JingdongCloudTradeBundle\Entity\Invoice;
+use Tourze\PHPUnitSymfonyKernelTest\Attribute\AsRepository;
 
 /**
  * 京东云交易发票信息仓储类
  *
- * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
- * @method Invoice|null findOneBy(array $criteria, array $orderBy = null)
- * @method Invoice[] findAll()
- * @method Invoice[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Invoice>
  */
+#[AsRepository(entityClass: Invoice::class)]
 class InvoiceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -23,6 +22,8 @@ class InvoiceRepository extends ServiceEntityRepository
 
     /**
      * 根据订单ID查询发票信息
+     *
+     * @return Invoice[]
      */
     public function findByOrderId(int $orderId): array
     {
@@ -36,4 +37,20 @@ class InvoiceRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['invoiceCode' => $invoiceCode, 'invoiceNumber' => $invoiceNumber]);
     }
-} 
+
+    public function save(Invoice $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Invoice $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+}

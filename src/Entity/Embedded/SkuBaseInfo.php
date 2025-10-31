@@ -10,6 +10,7 @@ use JingdongCloudTradeBundle\Enum\OwnerTypeEnum;
 use JingdongCloudTradeBundle\Enum\ReturnPolicyEnum;
 use JingdongCloudTradeBundle\Enum\SkuStateEnum;
 use JingdongCloudTradeBundle\Enum\StockStateEnum;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * 京东商品基础信息
@@ -21,72 +22,87 @@ class SkuBaseInfo
      * 商品SKU ID
      */
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '商品SKU ID'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 64)]
     private string $skuId;
 
     /**
      * 商品名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '商品名称'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $skuName;
 
     /**
      * 商品价格
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '商品价格'])]
+    #[Assert\NotBlank]
+    #[Assert\Regex(pattern: '/^\d+(\.\d{1,2})?$/')]
     private string $price;
 
     /**
      * 商品市场价格
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true, options: ['comment' => '商品市场价格'])]
+    #[Assert\Regex(pattern: '/^\d+(\.\d{1,2})?$/')]
     private ?string $marketPrice = null;
 
     /**
      * 商品分类ID
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '商品分类ID'])]
+    #[Assert\Length(max: 64)]
     private ?string $categoryId = null;
 
     /**
      * 商品分类名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '商品分类名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $categoryName = null;
 
     /**
      * 一级分类ID
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '一级分类ID'])]
+    #[Assert\Length(max: 64)]
     private ?string $categoryId1 = null;
 
     /**
      * 一级分类名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '一级分类名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $categoryName1 = null;
 
     /**
      * 二级分类ID
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '二级分类ID'])]
+    #[Assert\Length(max: 64)]
     private ?string $categoryId2 = null;
 
     /**
      * 二级分类名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '二级分类名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $categoryName2 = null;
 
     /**
      * 商品品牌ID
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '商品品牌ID'])]
+    #[Assert\Length(max: 64)]
     private ?string $brandId = null;
 
     /**
      * 商品品牌名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '商品品牌名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $brandName = null;
 
     /**
@@ -103,8 +119,10 @@ class SkuBaseInfo
 
     /**
      * 商品销售属性
+     * @var array<string, mixed>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '商品销售属性'])]
+    #[Assert\Type(type: 'array')]
     private ?array $saleAttrs = null;
 
     /**
@@ -129,12 +147,14 @@ class SkuBaseInfo
      * 店铺名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '店铺名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $shopName = null;
 
     /**
      * 商家名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '商家名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $vendorName = null;
 
     /**
@@ -147,48 +167,58 @@ class SkuBaseInfo
      * 发货地址
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '发货地址'])]
+    #[Assert\Length(max: 255)]
     private ?string $delivery = null;
 
     /**
      * 配送区域
+     * @var array<string, mixed>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '配送区域'])]
+    #[Assert\Type(type: 'array')]
     private ?array $deliveryAreas = null;
 
     /**
      * 商品型号
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '商品型号'])]
+    #[Assert\Length(max: 255)]
     private ?string $model = null;
 
     /**
      * 商品规格
+     * @var array<string, mixed>|null
      */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '商品规格'])]
+    #[Assert\Type(type: 'array')]
     private ?array $specs = null;
 
     /**
      * 颜色
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '颜色'])]
+    #[Assert\Length(max: 255)]
     private ?string $color = null;
 
     /**
      * 颜色顺序
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '颜色顺序'])]
+    #[Assert\Length(max: 255)]
     private ?string $colorSequence = null;
 
     /**
      * 尺码
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '尺码'])]
+    #[Assert\Length(max: 255)]
     private ?string $size = null;
 
     /**
      * 尺码顺序
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '尺码顺序'])]
+    #[Assert\Length(max: 255)]
     private ?string $sizeSequence = null;
 
     /**
@@ -207,12 +237,14 @@ class SkuBaseInfo
      * 质保信息
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '质保信息'])]
+    #[Assert\Length(max: 255)]
     private ?string $warranty = null;
 
     /**
      * 商品产地
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '商品产地'])]
+    #[Assert\Length(max: 255)]
     private ?string $placeOfProduction = null;
 
     /**
@@ -225,12 +257,14 @@ class SkuBaseInfo
      * 原产国
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '原产国'])]
+    #[Assert\Length(max: 64)]
     private ?string $originCountry = null;
 
     /**
      * 包装规格
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '包装规格'])]
+    #[Assert\Length(max: 255)]
     private ?string $packageType = null;
 
     /**
@@ -255,12 +289,14 @@ class SkuBaseInfo
      * 销售单位
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '销售单位'])]
+    #[Assert\Length(max: 64)]
     private ?string $unit = null;
 
     /**
      * UPC码
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => 'UPC码'])]
+    #[Assert\Length(max: 64)]
     private ?string $upcCode = null;
 
     /**
@@ -273,48 +309,56 @@ class SkuBaseInfo
      * 秒杀价格
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true, options: ['comment' => '秒杀价格'])]
+    #[Assert\Regex(pattern: '/^\d+(\.\d{1,2})?$/')]
     private ?string $flashSalePrice = null;
 
     /**
      * 秒杀开始时间
      */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '秒杀开始时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '秒杀开始时间'])]
+    #[Assert\Type(type: \DateTimeInterface::class)]
     private ?\DateTimeInterface $flashSaleStartTime = null;
 
     /**
      * 秒杀结束时间
      */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['comment' => '秒杀结束时间'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '秒杀结束时间'])]
+    #[Assert\Type(type: \DateTimeInterface::class)]
     private ?\DateTimeInterface $flashSaleEndTime = null;
 
     /**
      * 佣金比例
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true, options: ['comment' => '佣金比例'])]
+    #[Assert\Regex(pattern: '/^\d+(\.\d{1,2})?$/')]
     private ?string $commission = null;
 
     /**
      * 运费
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '运费'])]
+    #[Assert\Length(max: 64)]
     private ?string $fare = null;
 
     /**
      * 商品税率
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '商品税率'])]
+    #[Assert\Length(max: 64)]
     private ?string $tax = null;
 
     /**
      * 仓库ID
      */
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '仓库ID'])]
+    #[Assert\Length(max: 64)]
     private ?string $warehouseId = null;
 
     /**
      * 仓库名称
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => '仓库名称'])]
+    #[Assert\Length(max: 255)]
     private ?string $warehouseName = null;
 
     /**
@@ -329,10 +373,9 @@ class SkuBaseInfo
         return $this->skuId;
     }
 
-    public function setSkuId(string $skuId): self
+    public function setSkuId(string $skuId): void
     {
         $this->skuId = $skuId;
-        return $this;
     }
 
     public function getSkuName(): string
@@ -340,10 +383,9 @@ class SkuBaseInfo
         return $this->skuName;
     }
 
-    public function setSkuName(string $skuName): self
+    public function setSkuName(string $skuName): void
     {
         $this->skuName = $skuName;
-        return $this;
     }
 
     public function getPrice(): string
@@ -351,10 +393,9 @@ class SkuBaseInfo
         return $this->price;
     }
 
-    public function setPrice(string $price): self
+    public function setPrice(string $price): void
     {
         $this->price = $price;
-        return $this;
     }
 
     public function getMarketPrice(): ?string
@@ -362,10 +403,9 @@ class SkuBaseInfo
         return $this->marketPrice;
     }
 
-    public function setMarketPrice(?string $marketPrice): self
+    public function setMarketPrice(?string $marketPrice): void
     {
         $this->marketPrice = $marketPrice;
-        return $this;
     }
 
     public function getCategoryId(): ?string
@@ -373,10 +413,9 @@ class SkuBaseInfo
         return $this->categoryId;
     }
 
-    public function setCategoryId(?string $categoryId): self
+    public function setCategoryId(?string $categoryId): void
     {
         $this->categoryId = $categoryId;
-        return $this;
     }
 
     public function getCategoryName(): ?string
@@ -384,10 +423,9 @@ class SkuBaseInfo
         return $this->categoryName;
     }
 
-    public function setCategoryName(?string $categoryName): self
+    public function setCategoryName(?string $categoryName): void
     {
         $this->categoryName = $categoryName;
-        return $this;
     }
 
     public function getCategoryId1(): ?string
@@ -395,10 +433,9 @@ class SkuBaseInfo
         return $this->categoryId1;
     }
 
-    public function setCategoryId1(?string $categoryId1): self
+    public function setCategoryId1(?string $categoryId1): void
     {
         $this->categoryId1 = $categoryId1;
-        return $this;
     }
 
     public function getCategoryName1(): ?string
@@ -406,10 +443,9 @@ class SkuBaseInfo
         return $this->categoryName1;
     }
 
-    public function setCategoryName1(?string $categoryName1): self
+    public function setCategoryName1(?string $categoryName1): void
     {
         $this->categoryName1 = $categoryName1;
-        return $this;
     }
 
     public function getCategoryId2(): ?string
@@ -417,10 +453,9 @@ class SkuBaseInfo
         return $this->categoryId2;
     }
 
-    public function setCategoryId2(?string $categoryId2): self
+    public function setCategoryId2(?string $categoryId2): void
     {
         $this->categoryId2 = $categoryId2;
-        return $this;
     }
 
     public function getCategoryName2(): ?string
@@ -428,10 +463,9 @@ class SkuBaseInfo
         return $this->categoryName2;
     }
 
-    public function setCategoryName2(?string $categoryName2): self
+    public function setCategoryName2(?string $categoryName2): void
     {
         $this->categoryName2 = $categoryName2;
-        return $this;
     }
 
     public function getBrandId(): ?string
@@ -439,10 +473,9 @@ class SkuBaseInfo
         return $this->brandId;
     }
 
-    public function setBrandId(?string $brandId): self
+    public function setBrandId(?string $brandId): void
     {
         $this->brandId = $brandId;
-        return $this;
     }
 
     public function getBrandName(): ?string
@@ -450,10 +483,9 @@ class SkuBaseInfo
         return $this->brandName;
     }
 
-    public function setBrandName(?string $brandName): self
+    public function setBrandName(?string $brandName): void
     {
         $this->brandName = $brandName;
-        return $this;
     }
 
     public function getState(): SkuStateEnum
@@ -461,10 +493,9 @@ class SkuBaseInfo
         return $this->state;
     }
 
-    public function setState(SkuStateEnum $state): self
+    public function setState(SkuStateEnum $state): void
     {
         $this->state = $state;
-        return $this;
     }
 
     public function getWeight(): ?int
@@ -472,21 +503,25 @@ class SkuBaseInfo
         return $this->weight;
     }
 
-    public function setWeight(?int $weight): self
+    public function setWeight(?int $weight): void
     {
         $this->weight = $weight;
-        return $this;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getSaleAttrs(): ?array
     {
         return $this->saleAttrs;
     }
 
-    public function setSaleAttrs(?array $saleAttrs): self
+    /**
+     * @param array<string, mixed>|null $saleAttrs
+     */
+    public function setSaleAttrs(?array $saleAttrs): void
     {
         $this->saleAttrs = $saleAttrs;
-        return $this;
     }
 
     public function getStock(): int
@@ -494,10 +529,9 @@ class SkuBaseInfo
         return $this->stock;
     }
 
-    public function setStock(int $stock): self
+    public function setStock(int $stock): void
     {
         $this->stock = $stock;
-        return $this;
     }
 
     public function getStockState(): StockStateEnum
@@ -505,10 +539,9 @@ class SkuBaseInfo
         return $this->stockState;
     }
 
-    public function setStockState(StockStateEnum $stockState): self
+    public function setStockState(StockStateEnum $stockState): void
     {
         $this->stockState = $stockState;
-        return $this;
     }
 
     public function getOwnerType(): ?OwnerTypeEnum
@@ -516,10 +549,9 @@ class SkuBaseInfo
         return $this->ownerType;
     }
 
-    public function setOwnerType(?OwnerTypeEnum $ownerType): self
+    public function setOwnerType(?OwnerTypeEnum $ownerType): void
     {
         $this->ownerType = $ownerType;
-        return $this;
     }
 
     public function getShopName(): ?string
@@ -527,10 +559,9 @@ class SkuBaseInfo
         return $this->shopName;
     }
 
-    public function setShopName(?string $shopName): self
+    public function setShopName(?string $shopName): void
     {
         $this->shopName = $shopName;
-        return $this;
     }
 
     public function getVendorName(): ?string
@@ -538,10 +569,9 @@ class SkuBaseInfo
         return $this->vendorName;
     }
 
-    public function setVendorName(?string $vendorName): self
+    public function setVendorName(?string $vendorName): void
     {
         $this->vendorName = $vendorName;
-        return $this;
     }
 
     public function getDeliveryType(): ?DeliveryTypeEnum
@@ -549,10 +579,9 @@ class SkuBaseInfo
         return $this->deliveryType;
     }
 
-    public function setDeliveryType(?DeliveryTypeEnum $deliveryType): self
+    public function setDeliveryType(?DeliveryTypeEnum $deliveryType): void
     {
         $this->deliveryType = $deliveryType;
-        return $this;
     }
 
     public function getDelivery(): ?string
@@ -560,21 +589,25 @@ class SkuBaseInfo
         return $this->delivery;
     }
 
-    public function setDelivery(?string $delivery): self
+    public function setDelivery(?string $delivery): void
     {
         $this->delivery = $delivery;
-        return $this;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getDeliveryAreas(): ?array
     {
         return $this->deliveryAreas;
     }
 
-    public function setDeliveryAreas(?array $deliveryAreas): self
+    /**
+     * @param array<string, mixed>|null $deliveryAreas
+     */
+    public function setDeliveryAreas(?array $deliveryAreas): void
     {
         $this->deliveryAreas = $deliveryAreas;
-        return $this;
     }
 
     public function getModel(): ?string
@@ -582,21 +615,25 @@ class SkuBaseInfo
         return $this->model;
     }
 
-    public function setModel(?string $model): self
+    public function setModel(?string $model): void
     {
         $this->model = $model;
-        return $this;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getSpecs(): ?array
     {
         return $this->specs;
     }
 
-    public function setSpecs(?array $specs): self
+    /**
+     * @param array<string, mixed>|null $specs
+     */
+    public function setSpecs(?array $specs): void
     {
         $this->specs = $specs;
-        return $this;
     }
 
     public function getColor(): ?string
@@ -604,10 +641,9 @@ class SkuBaseInfo
         return $this->color;
     }
 
-    public function setColor(?string $color): self
+    public function setColor(?string $color): void
     {
         $this->color = $color;
-        return $this;
     }
 
     public function getColorSequence(): ?string
@@ -615,10 +651,9 @@ class SkuBaseInfo
         return $this->colorSequence;
     }
 
-    public function setColorSequence(?string $colorSequence): self
+    public function setColorSequence(?string $colorSequence): void
     {
         $this->colorSequence = $colorSequence;
-        return $this;
     }
 
     public function getSize(): ?string
@@ -626,10 +661,9 @@ class SkuBaseInfo
         return $this->size;
     }
 
-    public function setSize(?string $size): self
+    public function setSize(?string $size): void
     {
         $this->size = $size;
-        return $this;
     }
 
     public function getSizeSequence(): ?string
@@ -637,10 +671,9 @@ class SkuBaseInfo
         return $this->sizeSequence;
     }
 
-    public function setSizeSequence(?string $sizeSequence): self
+    public function setSizeSequence(?string $sizeSequence): void
     {
         $this->sizeSequence = $sizeSequence;
-        return $this;
     }
 
     public function getIs7ToReturn(): ?ReturnPolicyEnum
@@ -648,10 +681,9 @@ class SkuBaseInfo
         return $this->is7ToReturn;
     }
 
-    public function setIs7ToReturn(?ReturnPolicyEnum $is7ToReturn): self
+    public function setIs7ToReturn(?ReturnPolicyEnum $is7ToReturn): void
     {
         $this->is7ToReturn = $is7ToReturn;
-        return $this;
     }
 
     public function getIs15ToReturn(): ?ReturnPolicyEnum
@@ -659,10 +691,9 @@ class SkuBaseInfo
         return $this->is15ToReturn;
     }
 
-    public function setIs15ToReturn(?ReturnPolicyEnum $is15ToReturn): self
+    public function setIs15ToReturn(?ReturnPolicyEnum $is15ToReturn): void
     {
         $this->is15ToReturn = $is15ToReturn;
-        return $this;
     }
 
     public function getWarranty(): ?string
@@ -670,10 +701,9 @@ class SkuBaseInfo
         return $this->warranty;
     }
 
-    public function setWarranty(?string $warranty): self
+    public function setWarranty(?string $warranty): void
     {
         $this->warranty = $warranty;
-        return $this;
     }
 
     public function getPlaceOfProduction(): ?string
@@ -681,10 +711,9 @@ class SkuBaseInfo
         return $this->placeOfProduction;
     }
 
-    public function setPlaceOfProduction(?string $placeOfProduction): self
+    public function setPlaceOfProduction(?string $placeOfProduction): void
     {
         $this->placeOfProduction = $placeOfProduction;
-        return $this;
     }
 
     public function isGlobalBuy(): bool
@@ -692,10 +721,9 @@ class SkuBaseInfo
         return $this->isGlobalBuy;
     }
 
-    public function setIsGlobalBuy(bool $isGlobalBuy): self
+    public function setIsGlobalBuy(bool $isGlobalBuy): void
     {
         $this->isGlobalBuy = $isGlobalBuy;
-        return $this;
     }
 
     public function getOriginCountry(): ?string
@@ -703,10 +731,9 @@ class SkuBaseInfo
         return $this->originCountry;
     }
 
-    public function setOriginCountry(?string $originCountry): self
+    public function setOriginCountry(?string $originCountry): void
     {
         $this->originCountry = $originCountry;
-        return $this;
     }
 
     public function getPackageType(): ?string
@@ -714,10 +741,9 @@ class SkuBaseInfo
         return $this->packageType;
     }
 
-    public function setPackageType(?string $packageType): self
+    public function setPackageType(?string $packageType): void
     {
         $this->packageType = $packageType;
-        return $this;
     }
 
     public function getLength(): ?float
@@ -725,10 +751,9 @@ class SkuBaseInfo
         return $this->length;
     }
 
-    public function setLength(?float $length): self
+    public function setLength(?float $length): void
     {
         $this->length = $length;
-        return $this;
     }
 
     public function getWidth(): ?float
@@ -736,10 +761,9 @@ class SkuBaseInfo
         return $this->width;
     }
 
-    public function setWidth(?float $width): self
+    public function setWidth(?float $width): void
     {
         $this->width = $width;
-        return $this;
     }
 
     public function getHeight(): ?float
@@ -747,10 +771,9 @@ class SkuBaseInfo
         return $this->height;
     }
 
-    public function setHeight(?float $height): self
+    public function setHeight(?float $height): void
     {
         $this->height = $height;
-        return $this;
     }
 
     public function getUnit(): ?string
@@ -758,10 +781,9 @@ class SkuBaseInfo
         return $this->unit;
     }
 
-    public function setUnit(?string $unit): self
+    public function setUnit(?string $unit): void
     {
         $this->unit = $unit;
-        return $this;
     }
 
     public function getUpcCode(): ?string
@@ -769,10 +791,9 @@ class SkuBaseInfo
         return $this->upcCode;
     }
 
-    public function setUpcCode(?string $upcCode): self
+    public function setUpcCode(?string $upcCode): void
     {
         $this->upcCode = $upcCode;
-        return $this;
     }
 
     public function getIsFlashSale(): ?FlashSaleEnum
@@ -780,10 +801,9 @@ class SkuBaseInfo
         return $this->isFlashSale;
     }
 
-    public function setIsFlashSale(?FlashSaleEnum $isFlashSale): self
+    public function setIsFlashSale(?FlashSaleEnum $isFlashSale): void
     {
         $this->isFlashSale = $isFlashSale;
-        return $this;
     }
 
     public function getFlashSalePrice(): ?string
@@ -791,10 +811,9 @@ class SkuBaseInfo
         return $this->flashSalePrice;
     }
 
-    public function setFlashSalePrice(?string $flashSalePrice): self
+    public function setFlashSalePrice(?string $flashSalePrice): void
     {
         $this->flashSalePrice = $flashSalePrice;
-        return $this;
     }
 
     public function getFlashSaleStartTime(): ?\DateTimeInterface
@@ -802,10 +821,9 @@ class SkuBaseInfo
         return $this->flashSaleStartTime;
     }
 
-    public function setFlashSaleStartTime(?\DateTimeInterface $flashSaleStartTime): self
+    public function setFlashSaleStartTime(?\DateTimeInterface $flashSaleStartTime): void
     {
         $this->flashSaleStartTime = $flashSaleStartTime;
-        return $this;
     }
 
     public function getFlashSaleEndTime(): ?\DateTimeInterface
@@ -813,10 +831,9 @@ class SkuBaseInfo
         return $this->flashSaleEndTime;
     }
 
-    public function setFlashSaleEndTime(?\DateTimeInterface $flashSaleEndTime): self
+    public function setFlashSaleEndTime(?\DateTimeInterface $flashSaleEndTime): void
     {
         $this->flashSaleEndTime = $flashSaleEndTime;
-        return $this;
     }
 
     public function getCommission(): ?string
@@ -824,10 +841,9 @@ class SkuBaseInfo
         return $this->commission;
     }
 
-    public function setCommission(?string $commission): self
+    public function setCommission(?string $commission): void
     {
         $this->commission = $commission;
-        return $this;
     }
 
     public function getFare(): ?string
@@ -835,10 +851,9 @@ class SkuBaseInfo
         return $this->fare;
     }
 
-    public function setFare(?string $fare): self
+    public function setFare(?string $fare): void
     {
         $this->fare = $fare;
-        return $this;
     }
 
     public function getTax(): ?string
@@ -846,10 +861,9 @@ class SkuBaseInfo
         return $this->tax;
     }
 
-    public function setTax(?string $tax): self
+    public function setTax(?string $tax): void
     {
         $this->tax = $tax;
-        return $this;
     }
 
     public function getWarehouseId(): ?string
@@ -857,10 +871,9 @@ class SkuBaseInfo
         return $this->warehouseId;
     }
 
-    public function setWarehouseId(?string $warehouseId): self
+    public function setWarehouseId(?string $warehouseId): void
     {
         $this->warehouseId = $warehouseId;
-        return $this;
     }
 
     public function getWarehouseName(): ?string
@@ -868,10 +881,9 @@ class SkuBaseInfo
         return $this->warehouseName;
     }
 
-    public function setWarehouseName(?string $warehouseName): self
+    public function setWarehouseName(?string $warehouseName): void
     {
         $this->warehouseName = $warehouseName;
-        return $this;
     }
 
     public function getShelfLife(): ?int
@@ -879,14 +891,16 @@ class SkuBaseInfo
         return $this->shelfLife;
     }
 
-    public function setShelfLife(?int $shelfLife): self
+    public function setShelfLife(?int $shelfLife): void
     {
         $this->shelfLife = $shelfLife;
-        return $this;
     }
 
     /**
      * 转换为数组
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -914,13 +928,13 @@ class SkuBaseInfo
                 'value' => $this->stockState->value,
                 'label' => $this->stockState->getLabel(),
             ],
-            'ownerType' => $this->ownerType !== null ? [
+            'ownerType' => null !== $this->ownerType ? [
                 'value' => $this->ownerType->value,
                 'label' => $this->ownerType->getLabel(),
             ] : null,
             'shopName' => $this->shopName,
             'vendorName' => $this->vendorName,
-            'deliveryType' => $this->deliveryType !== null ? [
+            'deliveryType' => null !== $this->deliveryType ? [
                 'value' => $this->deliveryType->value,
                 'label' => $this->deliveryType->getLabel(),
             ] : null,
@@ -932,11 +946,11 @@ class SkuBaseInfo
             'colorSequence' => $this->colorSequence,
             'size' => $this->size,
             'sizeSequence' => $this->sizeSequence,
-            'is7ToReturn' => $this->is7ToReturn !== null ? [
+            'is7ToReturn' => null !== $this->is7ToReturn ? [
                 'value' => $this->is7ToReturn->value,
                 'label' => $this->is7ToReturn->getLabel(),
             ] : null,
-            'is15ToReturn' => $this->is15ToReturn !== null ? [
+            'is15ToReturn' => null !== $this->is15ToReturn ? [
                 'value' => $this->is15ToReturn->value,
                 'label' => $this->is15ToReturn->getLabel(),
             ] : null,
@@ -950,7 +964,7 @@ class SkuBaseInfo
             'height' => $this->height,
             'unit' => $this->unit,
             'upcCode' => $this->upcCode,
-            'isFlashSale' => $this->isFlashSale !== null ? [
+            'isFlashSale' => null !== $this->isFlashSale ? [
                 'value' => $this->isFlashSale->value,
                 'label' => $this->isFlashSale->getLabel(),
             ] : null,

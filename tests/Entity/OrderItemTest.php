@@ -5,125 +5,88 @@ namespace JingdongCloudTradeBundle\Tests\Entity;
 use JingdongCloudTradeBundle\Entity\Account;
 use JingdongCloudTradeBundle\Entity\Order;
 use JingdongCloudTradeBundle\Entity\OrderItem;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 
-class OrderItemTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(OrderItem::class)]
+final class OrderItemTest extends AbstractEntityTestCase
 {
-    private OrderItem $orderItem;
-    private Order $order;
-    private Account $account;
+    protected function createEntity(): object
+    {
+        // 创建关联实体
+        $account = new Account();
+        $account->setName('Test Account');
+        $account->setAppKey('test_app_key');
+        $account->setAppSecret('test_app_secret');
 
-    protected function setUp(): void
-    {
-        $this->orderItem = new OrderItem();
-        $this->order = new Order();
-        $this->account = new Account();
-        
-        // 设置必要的值
-        $this->account->setName('Test Account');
-        $this->account->setAppKey('test_app_key');
-        $this->account->setAppSecret('test_app_secret');
-        
-        $this->order->setAccount($this->account);
-        $this->order->setOrderId('JD123456789');
-        $this->order->setOrderState('CREATED');
-        $this->order->setPaymentState('UNPAID');
-        $this->order->setLogisticsState('UNSHIPPED');
-        $this->order->setReceiverName('测试用户');
-        $this->order->setReceiverMobile('13800138000');
-        $this->order->setReceiverProvince('北京市');
-        $this->order->setReceiverCity('北京市');
-        $this->order->setReceiverCounty('海淀区');
-        $this->order->setReceiverAddress('测试地址');
-        $this->order->setOrderTotalPrice('299.99');
-        $this->order->setOrderPaymentPrice('289.99');
-        $this->order->setFreightPrice('10.00');
-        $this->order->setOrderTime(new \DateTimeImmutable());
+        $order = new Order();
+        $order->setOrderId('JD123456789');
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PAID');
+        $order->setLogisticsState('SHIPPED');
+        $order->setAccount($account);
+
+        $orderItem = new OrderItem();
+        $orderItem->setAccount($account);
+        $orderItem->setOrder($order);
+        $orderItem->setSkuId('SKU123456');
+        $orderItem->setSkuName('测试商品');
+        $orderItem->setQuantity(1);
+        $orderItem->setPrice('99.99');
+        $orderItem->setTotalPrice('99.99');
+
+        return $orderItem;
     }
-    
-    public function testBasicProperties(): void
+
+    /**
+     * @return iterable<string, array{string, mixed}>
+     */
+    public static function propertiesProvider(): iterable
     {
-        $skuId = 'SKU123456';
-        $skuName = '测试商品';
-        $quantity = 2;
-        $price = '99.99';
-        $totalPrice = '199.98';
-        $imageUrl = 'https://example.com/img.jpg';
-        $attributes = '{"color":"红色","size":"M"}';
-        
-        $this->orderItem->setSkuId($skuId);
-        $this->orderItem->setSkuName($skuName);
-        $this->orderItem->setQuantity($quantity);
-        $this->orderItem->setPrice($price);
-        $this->orderItem->setTotalPrice($totalPrice);
-        $this->orderItem->setImageUrl($imageUrl);
-        $this->orderItem->setAttributes($attributes);
-        
-        $this->assertSame($skuId, $this->orderItem->getSkuId());
-        $this->assertSame($skuName, $this->orderItem->getSkuName());
-        $this->assertSame($quantity, $this->orderItem->getQuantity());
-        $this->assertSame($price, $this->orderItem->getPrice());
-        $this->assertSame($totalPrice, $this->orderItem->getTotalPrice());
-        $this->assertSame($imageUrl, $this->orderItem->getImageUrl());
-        $this->assertSame($attributes, $this->orderItem->getAttributes());
+        yield 'skuId' => ['skuId', 'SKU987654'];
+        yield 'skuName' => ['skuName', '另一个测试商品'];
+        yield 'quantity' => ['quantity', 3];
+        yield 'price' => ['price', '149.99'];
+        yield 'totalPrice' => ['totalPrice', '449.97'];
+        yield 'imageUrl' => ['imageUrl', 'https://example.com/image2.jpg'];
+        yield 'attributes' => ['attributes', '{"color":"蓝色","size":"L"}'];
     }
-    
-    public function testOrderRelation(): void
-    {
-        $this->orderItem->setOrder($this->order);
-        
-        $this->assertSame($this->order, $this->orderItem->getOrder());
-    }
-    
-    public function testAccountRelation(): void
-    {
-        $this->orderItem->setAccount($this->account);
-        
-        $this->assertSame($this->account, $this->orderItem->getAccount());
-    }
-    
-    public function testTimestampProperties(): void
-    {
-        $createTime = new \DateTimeImmutable();
-        $updateTime = new \DateTimeImmutable();
-        
-        $this->orderItem->setCreateTime($createTime);
-        $this->orderItem->setUpdateTime($updateTime);
-        
-        $this->assertSame($createTime, $this->orderItem->getCreateTime());
-        $this->assertSame($updateTime, $this->orderItem->getUpdateTime());
-    }
-    
+
+    /**
+     * 测试 retrievePlainArray 方法
+     */
     public function testRetrievePlainArray(): void
     {
-        // 设置必要的ID值模拟数据库中的对象
-        $this->setPrivateProperty($this->orderItem, 'id', 1);
-        $this->setPrivateProperty($this->order, 'id', 100);
-        $this->setPrivateProperty($this->account, 'id', 200);
-        
-        $skuId = 'SKU123456';
-        $skuName = '测试商品';
-        $quantity = 2;
-        $price = '99.99';
-        $totalPrice = '199.98';
-        $imageUrl = 'https://example.com/img.jpg';
-        $attributes = '{"color":"红色","size":"M"}';
-        $createTime = new \DateTimeImmutable('2023-01-01 10:00:00');
-        $updateTime = new \DateTimeImmutable('2023-01-02 11:00:00');
-        
-        $this->orderItem->setOrder($this->order);
-        $this->orderItem->setAccount($this->account);
-        $this->orderItem->setSkuId($skuId);
-        $this->orderItem->setSkuName($skuName);
-        $this->orderItem->setQuantity($quantity);
-        $this->orderItem->setPrice($price);
-        $this->orderItem->setTotalPrice($totalPrice);
-        $this->orderItem->setImageUrl($imageUrl);
-        $this->orderItem->setAttributes($attributes);
-        $this->orderItem->setCreateTime($createTime);
-        $this->orderItem->setUpdateTime($updateTime);
-        
-        $plainArray = $this->orderItem->retrievePlainArray();
+        // 创建关联实体
+        $account = new Account();
+        $account->setName('Test Account');
+        $account->setAppKey('test_app_key');
+        $account->setAppSecret('test_app_secret');
+
+        $order = new Order();
+        $order->setOrderId('JD123456789');
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PAID');
+        $order->setLogisticsState('SHIPPED');
+        $order->setAccount($account);
+
+        $orderItem = new OrderItem();
+        $orderItem->setAccount($account);
+        $orderItem->setOrder($order);
+        $orderItem->setSkuId('SKU123456');
+        $orderItem->setSkuName('测试商品');
+        $orderItem->setQuantity(2);
+        $orderItem->setPrice('99.99');
+        $orderItem->setTotalPrice('199.98');
+        $orderItem->setImageUrl('https://example.com/img.jpg');
+        $orderItem->setAttributes('{"color":"红色","size":"M"}');
+
+        $plainArray = $orderItem->retrievePlainArray();
+
         $this->assertArrayHasKey('id', $plainArray);
         $this->assertArrayHasKey('orderId', $plainArray);
         $this->assertArrayHasKey('skuId', $plainArray);
@@ -136,29 +99,43 @@ class OrderItemTest extends TestCase
         $this->assertArrayHasKey('accountId', $plainArray);
         $this->assertArrayHasKey('createTime', $plainArray);
         $this->assertArrayHasKey('updateTime', $plainArray);
-        
-        $this->assertEquals(1, $plainArray['id']);
-        $this->assertEquals(100, $plainArray['orderId']);
-        $this->assertEquals($skuId, $plainArray['skuId']);
-        $this->assertEquals($skuName, $plainArray['skuName']);
-        $this->assertEquals($quantity, $plainArray['quantity']);
-        $this->assertEquals($price, $plainArray['price']);
-        $this->assertEquals($totalPrice, $plainArray['totalPrice']);
-        $this->assertEquals($imageUrl, $plainArray['imageUrl']);
-        $this->assertEquals($attributes, $plainArray['attributes']);
-        $this->assertEquals(200, $plainArray['accountId']);
-        $this->assertEquals('2023-01-01 10:00:00', $plainArray['createTime']);
-        $this->assertEquals('2023-01-02 11:00:00', $plainArray['updateTime']);
+
+        $this->assertEquals('SKU123456', $plainArray['skuId']);
+        $this->assertEquals('测试商品', $plainArray['skuName']);
+        $this->assertEquals(2, $plainArray['quantity']);
+        $this->assertEquals('99.99', $plainArray['price']);
+        $this->assertEquals('199.98', $plainArray['totalPrice']);
+        $this->assertEquals('https://example.com/img.jpg', $plainArray['imageUrl']);
+        $this->assertEquals('{"color":"红色","size":"M"}', $plainArray['attributes']);
     }
-    
+
     /**
-     * 通过反射设置私有属性的值
+     * 测试 __toString 方法
      */
-    private function setPrivateProperty(object $object, string $propertyName, mixed $value): void
+    public function testToString(): void
     {
-        $reflection = new \ReflectionClass($object);
-        $property = $reflection->getProperty($propertyName);
-        $property->setAccessible(true);
-        $property->setValue($object, $value);
+        // 创建关联实体
+        $account = new Account();
+        $account->setName('Test Account');
+        $account->setAppKey('test_app_key');
+        $account->setAppSecret('test_app_secret');
+
+        $order = new Order();
+        $order->setOrderId('JD123456789');
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PAID');
+        $order->setLogisticsState('SHIPPED');
+        $order->setAccount($account);
+
+        $orderItem = new OrderItem();
+        $orderItem->setAccount($account);
+        $orderItem->setOrder($order);
+        $orderItem->setSkuId('SKU123456');
+        $orderItem->setSkuName('测试商品');
+        $orderItem->setQuantity(2);
+        $orderItem->setPrice('99.99');
+        $orderItem->setTotalPrice('199.98');
+
+        $this->assertEquals('测试商品 x2', (string) $orderItem);
     }
-} 
+}

@@ -23,23 +23,29 @@ enum PaymentChannelEnum: string implements Labelable, Itemable, Selectable
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::WECHAT => '微信支付',
             self::ALIPAY => '支付宝',
-            self::UNIONPAY => '银联',
-            self::OTHER => '其他',
+            self::UNIONPAY => '银联支付',
+            self::OTHER => '其他支付',
         };
     }
-    
+
     /**
-     * 获取所有渠道选项（用于表单选择）
+     * 获取所有枚举的选项数组（用于下拉列表等）
+     *
+     * @return array<int, array{value: string, label: string}>
      */
-    public static function getOptions(): array
+    public static function toSelectItems(): array
     {
-        $options = [];
+        $result = [];
         foreach (self::cases() as $case) {
-            $options[$case->value] = $case->getLabel();
+            $result[] = [
+                'value' => $case->value,
+                'label' => $case->getLabel(),
+            ];
         }
-        return $options;
+
+        return $result;
     }
-} 
+}

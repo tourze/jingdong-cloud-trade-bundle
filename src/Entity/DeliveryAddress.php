@@ -5,6 +5,7 @@ namespace JingdongCloudTradeBundle\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JingdongCloudTradeBundle\Repository\DeliveryAddressRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Tourze\Arrayable\PlainArrayInterface;
 use Tourze\DoctrineIndexedBundle\Attribute\IndexColumn;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
@@ -14,6 +15,7 @@ use Tourze\DoctrineUserBundle\Traits\BlameableAware;
  * 京东云交易收货地址
  *
  * 参考文档：https://developer.jdcloud.com/article/4117
+ * @implements PlainArrayInterface<string, mixed>
  */
 #[ORM\Entity(repositoryClass: DeliveryAddressRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_delivery_address', options: ['comment' => '京东云交易收货地址'])]
@@ -21,70 +23,91 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
 {
     use TimestampableAware;
     use BlameableAware;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
-    private ?int $id = 0;
+    private int $id = 0;
 
     /**
      * 关联京东账户
      */
-    #[ORM\ManyToOne(targetEntity: Account::class)]
+    #[ORM\ManyToOne(targetEntity: Account::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private Account $account;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '收货人姓名'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $receiverName;
 
     #[ORM\Column(type: Types::STRING, length: 20, options: ['comment' => '收货人手机号'])]
     #[IndexColumn]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 20)]
     private string $receiverMobile;
 
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '收货人固定电话'])]
+    #[Assert\Length(max: 20)]
     private ?string $receiverPhone = null;
 
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '省份'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 64)]
     private string $province;
 
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '城市'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 64)]
     private string $city;
 
     #[ORM\Column(type: Types::STRING, length: 64, options: ['comment' => '区县'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 64)]
     private string $county;
 
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '街道/乡镇'])]
+    #[Assert\Length(max: 64)]
     private ?string $town = null;
 
     #[ORM\Column(type: Types::STRING, length: 512, options: ['comment' => '详细地址'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 512)]
     private string $detailAddress;
 
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '邮政编码'])]
+    #[Assert\Length(max: 20)]
     private ?string $postCode = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否默认地址'])]
+    #[Assert\NotNull]
     private bool $isDefault = false;
 
     #[ORM\Column(type: Types::STRING, length: 64, nullable: true, options: ['comment' => '地址标签（如家、公司等）'])]
+    #[Assert\Length(max: 64)]
     private ?string $addressTag = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '支持全球购'])]
+    #[Assert\NotNull]
     private bool $supportGlobalBuy = false;
 
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true, options: ['comment' => '身份证号（全球购必填）'])]
+    #[Assert\Length(max: 20)]
     private ?string $idCardNo = null;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
-    }public function getAccount(): Account
+    }
+
+    public function getAccount(): Account
     {
         return $this->account;
     }
 
-    public function setAccount(Account $account): self
+    public function setAccount(Account $account): void
     {
         $this->account = $account;
-        return $this;
     }
 
     public function getReceiverName(): string
@@ -92,10 +115,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->receiverName;
     }
 
-    public function setReceiverName(string $receiverName): self
+    public function setReceiverName(string $receiverName): void
     {
         $this->receiverName = $receiverName;
-        return $this;
     }
 
     public function getReceiverMobile(): string
@@ -103,10 +125,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->receiverMobile;
     }
 
-    public function setReceiverMobile(string $receiverMobile): self
+    public function setReceiverMobile(string $receiverMobile): void
     {
         $this->receiverMobile = $receiverMobile;
-        return $this;
     }
 
     public function getReceiverPhone(): ?string
@@ -114,10 +135,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->receiverPhone;
     }
 
-    public function setReceiverPhone(?string $receiverPhone): self
+    public function setReceiverPhone(?string $receiverPhone): void
     {
         $this->receiverPhone = $receiverPhone;
-        return $this;
     }
 
     public function getProvince(): string
@@ -125,10 +145,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->province;
     }
 
-    public function setProvince(string $province): self
+    public function setProvince(string $province): void
     {
         $this->province = $province;
-        return $this;
     }
 
     public function getCity(): string
@@ -136,10 +155,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->city;
     }
 
-    public function setCity(string $city): self
+    public function setCity(string $city): void
     {
         $this->city = $city;
-        return $this;
     }
 
     public function getCounty(): string
@@ -147,10 +165,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->county;
     }
 
-    public function setCounty(string $county): self
+    public function setCounty(string $county): void
     {
         $this->county = $county;
-        return $this;
     }
 
     public function getTown(): ?string
@@ -158,10 +175,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->town;
     }
 
-    public function setTown(?string $town): self
+    public function setTown(?string $town): void
     {
         $this->town = $town;
-        return $this;
     }
 
     public function getDetailAddress(): string
@@ -169,10 +185,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->detailAddress;
     }
 
-    public function setDetailAddress(string $detailAddress): self
+    public function setDetailAddress(string $detailAddress): void
     {
         $this->detailAddress = $detailAddress;
-        return $this;
     }
 
     public function getPostCode(): ?string
@@ -180,10 +195,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->postCode;
     }
 
-    public function setPostCode(?string $postCode): self
+    public function setPostCode(?string $postCode): void
     {
         $this->postCode = $postCode;
-        return $this;
     }
 
     public function isDefault(): bool
@@ -191,10 +205,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->isDefault;
     }
 
-    public function setIsDefault(bool $isDefault): self
+    public function setIsDefault(bool $isDefault): void
     {
         $this->isDefault = $isDefault;
-        return $this;
     }
 
     public function getAddressTag(): ?string
@@ -202,10 +215,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->addressTag;
     }
 
-    public function setAddressTag(?string $addressTag): self
+    public function setAddressTag(?string $addressTag): void
     {
         $this->addressTag = $addressTag;
-        return $this;
     }
 
     public function supportGlobalBuy(): bool
@@ -213,10 +225,9 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->supportGlobalBuy;
     }
 
-    public function setSupportGlobalBuy(bool $supportGlobalBuy): self
+    public function setSupportGlobalBuy(bool $supportGlobalBuy): void
     {
         $this->supportGlobalBuy = $supportGlobalBuy;
-        return $this;
     }
 
     public function getIdCardNo(): ?string
@@ -224,12 +235,10 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
         return $this->idCardNo;
     }
 
-    public function setIdCardNo(?string $idCardNo): self
+    public function setIdCardNo(?string $idCardNo): void
     {
         $this->idCardNo = $idCardNo;
-        return $this;
     }
-
 
     /**
      * 获取完整地址
@@ -237,13 +246,17 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
     public function getFullAddress(): string
     {
         $address = $this->province . ' ' . $this->city . ' ' . $this->county;
-        if ($this->town !== null && $this->town !== '') {
+        if (null !== $this->town && '' !== $this->town) {
             $address .= ' ' . $this->town;
         }
         $address .= ' ' . $this->detailAddress;
+
         return $address;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrievePlainArray(): array
     {
         return [
@@ -272,4 +285,4 @@ class DeliveryAddress implements PlainArrayInterface, \Stringable
     {
         return sprintf('%s - %s', $this->receiverName, $this->getFullAddress());
     }
-} 
+}

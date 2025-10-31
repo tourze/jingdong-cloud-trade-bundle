@@ -1,3 +1,0 @@
-jingdong_cloud_trade_controllers:
-  resource: '../../Controller/'
-  type: attribute

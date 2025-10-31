@@ -3,119 +3,150 @@
 namespace JingdongCloudTradeBundle\Tests\Entity;
 
 use JingdongCloudTradeBundle\Entity\Account;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 
-class AccountTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(Account::class)]
+final class AccountTest extends AbstractEntityTestCase
 {
-    private Account $account;
-
-    protected function setUp(): void
+    protected function createEntity(): object
     {
-        $this->account = new Account();
+        return new Account();
+    }
+
+    /**
+     * @return iterable<string, array{string, mixed}>
+     */
+    public static function propertiesProvider(): iterable
+    {
+        yield 'name' => ['name', 'TestJDAccount'];
+        yield 'appKey' => ['appKey', 'test_app_key'];
+        yield 'appSecret' => ['appSecret', 'test_app_secret'];
+        yield 'accessToken' => ['accessToken', 'test_access_token'];
+        yield 'refreshToken' => ['refreshToken', 'test_refresh_token'];
+        yield 'accessTokenExpireTime' => ['accessTokenExpireTime', new \DateTimeImmutable('+1 hour')];
+        yield 'refreshTokenExpireTime' => ['refreshTokenExpireTime', new \DateTimeImmutable('+1 day')];
+        yield 'code' => ['code', 'test_auth_code'];
+        yield 'codeExpireTime' => ['codeExpireTime', new \DateTimeImmutable('+10 minutes')];
+        yield 'state' => ['state', 'test_state'];
     }
 
     public function testBasicProperties(): void
     {
+        $account = new Account();
         $name = 'TestJDAccount';
         $appKey = 'test_app_key';
         $appSecret = 'test_app_secret';
-        
-        $this->account->setName($name);
-        $this->account->setAppKey($appKey);
-        $this->account->setAppSecret($appSecret);
-        
-        $this->assertSame($name, $this->account->getName());
-        $this->assertSame($appKey, $this->account->getAppKey());
-        $this->assertSame($appSecret, $this->account->getAppSecret());
+
+        $account->setName($name);
+        $account->setAppKey($appKey);
+        $account->setAppSecret($appSecret);
+
+        $this->assertSame($name, $account->getName());
+        $this->assertSame($appKey, $account->getAppKey());
+        $this->assertSame($appSecret, $account->getAppSecret());
     }
-    
+
     public function testTokenProperties(): void
     {
+        $account = new Account();
         $accessToken = 'test_access_token';
         $refreshToken = 'test_refresh_token';
         $now = new \DateTimeImmutable();
-        
-        $this->account->setAccessToken($accessToken);
-        $this->account->setRefreshToken($refreshToken);
-        $this->account->setAccessTokenExpiresAt($now);
-        $this->account->setRefreshTokenExpiresAt($now);
-        
-        $this->assertSame($accessToken, $this->account->getAccessToken());
-        $this->assertSame($refreshToken, $this->account->getRefreshToken());
-        $this->assertSame($now, $this->account->getAccessTokenExpiresAt());
-        $this->assertSame($now, $this->account->getRefreshTokenExpiresAt());
+
+        $account->setAccessToken($accessToken);
+        $account->setRefreshToken($refreshToken);
+        $account->setAccessTokenExpireTime($now);
+        $account->setRefreshTokenExpireTime($now);
+
+        $this->assertSame($accessToken, $account->getAccessToken());
+        $this->assertSame($refreshToken, $account->getRefreshToken());
+        $this->assertSame($now, $account->getAccessTokenExpireTime());
+        $this->assertSame($now, $account->getRefreshTokenExpireTime());
     }
-    
-    public function testAccessTokenExpired_withNullExpirationDate(): void
+
+    public function testAccessTokenExpiredWithNullExpirationDate(): void
     {
-        $this->account->setAccessTokenExpiresAt(null);
-        
-        $this->assertTrue($this->account->isAccessTokenExpired());
+        $account = new Account();
+        $account->setAccessTokenExpireTime(null);
+
+        $this->assertTrue($account->isAccessTokenExpired());
     }
-    
-    public function testAccessTokenExpired_withFutureExpirationDate(): void
+
+    public function testAccessTokenExpiredWithFutureExpirationDate(): void
     {
+        $account = new Account();
         $futureDate = new \DateTimeImmutable('+1 hour');
-        $this->account->setAccessTokenExpiresAt($futureDate);
-        
-        $this->assertFalse($this->account->isAccessTokenExpired());
+        $account->setAccessTokenExpireTime($futureDate);
+
+        $this->assertFalse($account->isAccessTokenExpired());
     }
-    
-    public function testAccessTokenExpired_withPastExpirationDate(): void
+
+    public function testAccessTokenExpiredWithPastExpirationDate(): void
     {
+        $account = new Account();
         $pastDate = new \DateTimeImmutable('-1 hour');
-        $this->account->setAccessTokenExpiresAt($pastDate);
-        
-        $this->assertTrue($this->account->isAccessTokenExpired());
+        $account->setAccessTokenExpireTime($pastDate);
+
+        $this->assertTrue($account->isAccessTokenExpired());
     }
-    
-    public function testRefreshTokenExpired_withNullExpirationDate(): void
+
+    public function testRefreshTokenExpiredWithNullExpirationDate(): void
     {
-        $this->account->setRefreshTokenExpiresAt(null);
-        
-        $this->assertTrue($this->account->isRefreshTokenExpired());
+        $account = new Account();
+        $account->setRefreshTokenExpireTime(null);
+
+        $this->assertTrue($account->isRefreshTokenExpired());
     }
-    
-    public function testRefreshTokenExpired_withFutureExpirationDate(): void
+
+    public function testRefreshTokenExpiredWithFutureExpirationDate(): void
     {
+        $account = new Account();
         $futureDate = new \DateTimeImmutable('+1 hour');
-        $this->account->setRefreshTokenExpiresAt($futureDate);
-        
-        $this->assertFalse($this->account->isRefreshTokenExpired());
+        $account->setRefreshTokenExpireTime($futureDate);
+
+        $this->assertFalse($account->isRefreshTokenExpired());
     }
-    
-    public function testRefreshTokenExpired_withPastExpirationDate(): void
+
+    public function testRefreshTokenExpiredWithPastExpirationDate(): void
     {
+        $account = new Account();
         $pastDate = new \DateTimeImmutable('-1 hour');
-        $this->account->setRefreshTokenExpiresAt($pastDate);
-        
-        $this->assertTrue($this->account->isRefreshTokenExpired());
+        $account->setRefreshTokenExpireTime($pastDate);
+
+        $this->assertTrue($account->isRefreshTokenExpired());
     }
-    
+
     public function testCodeProperties(): void
     {
+        $account = new Account();
         $code = 'test_auth_code';
         $state = 'test_state';
         $expiresAt = new \DateTimeImmutable('+10 minutes');
-        
-        $this->account->setCode($code);
-        $this->account->setState($state);
-        $this->account->setCodeExpiresAt($expiresAt);
-        
-        $this->assertSame($code, $this->account->getCode());
-        $this->assertSame($state, $this->account->getState());
-        $this->assertSame($expiresAt, $this->account->getCodeExpiresAt());
+
+        $account->setCode($code);
+        $account->setState($state);
+        $account->setCodeExpireTime($expiresAt);
+
+        $this->assertSame($code, $account->getCode());
+        $this->assertSame($state, $account->getState());
+        $this->assertSame($expiresAt, $account->getCodeExpireTime());
     }
-    
+
     public function testTimestampProperties(): void
     {
+        $account = new Account();
         $createTime = new \DateTimeImmutable();
         $updateTime = new \DateTimeImmutable();
-        
-        $this->account->setCreateTime($createTime);
-        $this->account->setUpdateTime($updateTime);
-        
-        $this->assertSame($createTime, $this->account->getCreateTime());
-        $this->assertSame($updateTime, $this->account->getUpdateTime());
+
+        $account->setCreateTime($createTime);
+        $account->setUpdateTime($updateTime);
+
+        $this->assertSame($createTime, $account->getCreateTime());
+        $this->assertSame($updateTime, $account->getUpdateTime());
     }
-} 
+}

@@ -5,20 +5,27 @@ namespace JingdongCloudTradeBundle\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JingdongCloudTradeBundle\Repository\CommentRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Tourze\Arrayable\AdminArrayInterface;
 use Tourze\Arrayable\PlainArrayInterface;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
+/**
+ * @implements PlainArrayInterface<string, mixed>
+ * @implements AdminArrayInterface<string, mixed>
+ */
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_comment', options: ['comment' => '京东云交易订单评论'])]
 class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
+    use TimestampableAware;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
-    private ?int $id = 0;
+    private int $id = 0;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -26,50 +33,65 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
     /**
      * 关联京东账户
      */
-    #[ORM\ManyToOne(targetEntity: Account::class)]
+    #[ORM\ManyToOne(targetEntity: Account::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private Account $account;
 
-    #[ORM\ManyToOne(targetEntity: Order::class)]
+    #[ORM\ManyToOne(targetEntity: Order::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private Order $order;
 
-    #[ORM\ManyToOne(targetEntity: OrderItem::class)]
+    #[ORM\ManyToOne(targetEntity: OrderItem::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private OrderItem $orderItem;
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '评分：1-5分，1分最低，5分最高'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
+    #[Assert\Choice(choices: ['1', '2', '3', '4', '5'])]
     private string $score;
 
     #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '评论内容'])]
+    #[Assert\Length(max: 65535)]
     private ?string $content = null;
 
+    /**
+     * @var array<string>|null
+     */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '评论图片URL列表'])]
+    #[Assert\All(constraints: [
+        new Assert\Url(),
+    ])]
     private ?array $images = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否匿名评论'])]
+    #[Assert\NotNull]
     private bool $isAnonymous = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => '评论时间'])]
+    #[Assert\NotNull]
+    #[Assert\Type(type: \DateTimeImmutable::class)]
     private \DateTimeImmutable $commentTime;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['comment' => '是否通过审核'])]
+    #[Assert\NotNull]
     private bool $isApproved = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '审核时间'])]
+    #[Assert\Type(type: \DateTimeImmutable::class)]
     private ?\DateTimeImmutable $approveTime = null;
-
-    use TimestampableAware;
 
     public function getAccount(): Account
     {
         return $this->account;
     }
 
-    public function setAccount(Account $account): self
+    public function setAccount(Account $account): void
     {
         $this->account = $account;
-        return $this;
     }
 
     public function getOrder(): Order
@@ -77,10 +99,9 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->order;
     }
 
-    public function setOrder(Order $order): self
+    public function setOrder(Order $order): void
     {
         $this->order = $order;
-        return $this;
     }
 
     public function getOrderItem(): OrderItem
@@ -88,10 +109,9 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->orderItem;
     }
 
-    public function setOrderItem(OrderItem $orderItem): self
+    public function setOrderItem(OrderItem $orderItem): void
     {
         $this->orderItem = $orderItem;
-        return $this;
     }
 
     public function getScore(): string
@@ -99,10 +119,9 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->score;
     }
 
-    public function setScore(string $score): self
+    public function setScore(string $score): void
     {
         $this->score = $score;
-        return $this;
     }
 
     public function getContent(): ?string
@@ -110,21 +129,25 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->content;
     }
 
-    public function setContent(?string $content): self
+    public function setContent(?string $content): void
     {
         $this->content = $content;
-        return $this;
     }
 
+    /**
+     * @return array<string>|null
+     */
     public function getImages(): ?array
     {
         return $this->images;
     }
 
-    public function setImages(?array $images): self
+    /**
+     * @param array<string>|null $images
+     */
+    public function setImages(?array $images): void
     {
         $this->images = $images;
-        return $this;
     }
 
     public function isAnonymous(): bool
@@ -132,10 +155,9 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->isAnonymous;
     }
 
-    public function setIsAnonymous(bool $isAnonymous): self
+    public function setIsAnonymous(bool $isAnonymous): void
     {
         $this->isAnonymous = $isAnonymous;
-        return $this;
     }
 
     public function getCommentTime(): \DateTimeImmutable
@@ -143,10 +165,9 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->commentTime;
     }
 
-    public function setCommentTime(\DateTimeImmutable $commentTime): self
+    public function setCommentTime(\DateTimeImmutable $commentTime): void
     {
         $this->commentTime = $commentTime;
-        return $this;
     }
 
     public function isApproved(): bool
@@ -154,10 +175,9 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->isApproved;
     }
 
-    public function setIsApproved(bool $isApproved): self
+    public function setIsApproved(bool $isApproved): void
     {
         $this->isApproved = $isApproved;
-        return $this;
     }
 
     public function getApproveTime(): ?\DateTimeImmutable
@@ -165,12 +185,14 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->approveTime;
     }
 
-    public function setApproveTime(?\DateTimeImmutable $approveTime): self
+    public function setApproveTime(?\DateTimeImmutable $approveTime): void
     {
         $this->approveTime = $approveTime;
-        return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrievePlainArray(): array
     {
         return [
@@ -191,6 +213,9 @@ class Comment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrieveAdminArray(): array
     {
         return $this->retrievePlainArray() + [

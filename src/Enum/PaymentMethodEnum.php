@@ -21,21 +21,27 @@ enum PaymentMethodEnum: string implements Labelable, Itemable, Selectable
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ONLINE => '在线支付',
             self::COD => '货到付款',
         };
     }
-    
+
     /**
-     * 获取所有方式选项（用于表单选择）
+     * 获取所有枚举的选项数组（用于下拉列表等）
+     *
+     * @return array<int, array{value: string, label: string}>
      */
-    public static function getOptions(): array
+    public static function toSelectItems(): array
     {
-        $options = [];
+        $result = [];
         foreach (self::cases() as $case) {
-            $options[$case->value] = $case->getLabel();
+            $result[] = [
+                'value' => $case->value,
+                'label' => $case->getLabel(),
+            ];
         }
-        return $options;
+
+        return $result;
     }
 }

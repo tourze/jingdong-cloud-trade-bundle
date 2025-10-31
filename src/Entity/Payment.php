@@ -8,21 +8,28 @@ use JingdongCloudTradeBundle\Enum\PaymentChannelEnum;
 use JingdongCloudTradeBundle\Enum\PaymentMethodEnum;
 use JingdongCloudTradeBundle\Enum\PaymentStateEnum;
 use JingdongCloudTradeBundle\Repository\PaymentRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Tourze\Arrayable\AdminArrayInterface;
 use Tourze\Arrayable\PlainArrayInterface;
 use Tourze\DoctrineIndexedBundle\Attribute\IndexColumn;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
+/**
+ * @implements PlainArrayInterface<string, mixed>
+ * @implements AdminArrayInterface<string, mixed>
+ */
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 #[ORM\Table(name: 'jd_cloud_trade_payment', options: ['comment' => '京东云交易支付信息'])]
 class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
 {
+    use TimestampableAware;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => 'ID'])]
-    private ?int $id = 0;
+    private int $id = 0;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -36,37 +43,44 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
 
     #[ORM\Column(type: Types::STRING, length: 255, options: ['comment' => '支付流水号'])]
     #[IndexColumn]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $paymentId;
 
     #[ORM\Column(type: Types::STRING, length: 1, enumType: PaymentMethodEnum::class, options: ['comment' => '支付方式'])]
+    #[Assert\Choice(callback: [PaymentMethodEnum::class, 'cases'])]
     private PaymentMethodEnum $paymentMethod = PaymentMethodEnum::ONLINE;
 
     #[ORM\Column(type: Types::STRING, length: 20, enumType: PaymentChannelEnum::class, nullable: true, options: ['comment' => '支付渠道'])]
+    #[Assert\Choice(callback: [PaymentChannelEnum::class, 'cases'])]
     private ?PaymentChannelEnum $paymentChannel = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['comment' => '支付金额'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 13)]
+    #[Assert\Regex(pattern: '/^\d+(\.\d{1,2})?$/')]
     private string $paymentAmount;
 
     #[ORM\Column(type: Types::STRING, length: 1, enumType: PaymentStateEnum::class, options: ['comment' => '支付状态'])]
+    #[Assert\Choice(callback: [PaymentStateEnum::class, 'cases'])]
     private PaymentStateEnum $paymentState = PaymentStateEnum::PENDING;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => '支付时间'])]
+    #[Assert\DateTime]
     private ?\DateTimeImmutable $paymentTime = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true, options: ['comment' => '支付备注信息'])]
+    #[Assert\Length(max: 65535)]
     private ?string $paymentNote = null;
-
-    use TimestampableAware;
 
     public function getOrder(): Order
     {
         return $this->order;
     }
 
-    public function setOrder(Order $order): self
+    public function setOrder(Order $order): void
     {
         $this->order = $order;
-        return $this;
     }
 
     public function getPaymentId(): string
@@ -74,10 +88,9 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->paymentId;
     }
 
-    public function setPaymentId(string $paymentId): self
+    public function setPaymentId(string $paymentId): void
     {
         $this->paymentId = $paymentId;
-        return $this;
     }
 
     public function getPaymentMethod(): PaymentMethodEnum
@@ -85,10 +98,9 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->paymentMethod;
     }
 
-    public function setPaymentMethod(PaymentMethodEnum $paymentMethod): self
+    public function setPaymentMethod(PaymentMethodEnum $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
-        return $this;
     }
 
     public function getPaymentChannel(): ?PaymentChannelEnum
@@ -96,10 +108,9 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->paymentChannel;
     }
 
-    public function setPaymentChannel(?PaymentChannelEnum $paymentChannel): self
+    public function setPaymentChannel(?PaymentChannelEnum $paymentChannel): void
     {
         $this->paymentChannel = $paymentChannel;
-        return $this;
     }
 
     public function getPaymentAmount(): string
@@ -107,10 +118,9 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->paymentAmount;
     }
 
-    public function setPaymentAmount(string $paymentAmount): self
+    public function setPaymentAmount(string $paymentAmount): void
     {
         $this->paymentAmount = $paymentAmount;
-        return $this;
     }
 
     public function getPaymentState(): PaymentStateEnum
@@ -118,10 +128,9 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->paymentState;
     }
 
-    public function setPaymentState(PaymentStateEnum $paymentState): self
+    public function setPaymentState(PaymentStateEnum $paymentState): void
     {
         $this->paymentState = $paymentState;
-        return $this;
     }
 
     public function getPaymentTime(): ?\DateTimeImmutable
@@ -129,10 +138,9 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->paymentTime;
     }
 
-    public function setPaymentTime(?\DateTimeImmutable $paymentTime): self
+    public function setPaymentTime(?\DateTimeImmutable $paymentTime): void
     {
         $this->paymentTime = $paymentTime;
-        return $this;
     }
 
     public function getPaymentNote(): ?string
@@ -140,12 +148,14 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         return $this->paymentNote;
     }
 
-    public function setPaymentNote(?string $paymentNote): self
+    public function setPaymentNote(?string $paymentNote): void
     {
         $this->paymentNote = $paymentNote;
-        return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrievePlainArray(): array
     {
         return [
@@ -166,6 +176,9 @@ class Payment implements PlainArrayInterface, AdminArrayInterface, \Stringable
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function retrieveAdminArray(): array
     {
         return $this->retrievePlainArray() + [

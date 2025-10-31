@@ -5,17 +5,16 @@ namespace JingdongCloudTradeBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use JingdongCloudTradeBundle\Entity\DeliveryAddress;
+use Tourze\PHPUnitSymfonyKernelTest\Attribute\AsRepository;
 
 /**
  * 京东云交易收货地址仓储类
  *
  * 参考文档：https://developer.jdcloud.com/article/4117
  *
- * @method DeliveryAddress|null find($id, $lockMode = null, $lockVersion = null)
- * @method DeliveryAddress|null findOneBy(array $criteria, array $orderBy = null)
- * @method DeliveryAddress[] findAll()
- * @method DeliveryAddress[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<DeliveryAddress>
  */
+#[AsRepository(entityClass: DeliveryAddress::class)]
 class DeliveryAddressRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -25,10 +24,12 @@ class DeliveryAddressRepository extends ServiceEntityRepository
 
     /**
      * 根据用户ID查询收货地址列表
+     *
+     * @return DeliveryAddress[]
      */
     public function findByUserId(int $userId): array
     {
-        return $this->findBy(['createdBy' => $userId], ['isDefault' => 'DESC', 'createdAt' => 'DESC']);
+        return $this->findBy(['createdBy' => $userId], ['isDefault' => 'DESC', 'createTime' => 'DESC']);
     }
 
     /**
@@ -41,6 +42,8 @@ class DeliveryAddressRepository extends ServiceEntityRepository
 
     /**
      * 根据收货人手机号查询收货地址
+     *
+     * @return DeliveryAddress[]
      */
     public function findByReceiverMobile(string $receiverMobile, int $userId): array
     {
@@ -49,9 +52,27 @@ class DeliveryAddressRepository extends ServiceEntityRepository
 
     /**
      * 查询支持全球购的收货地址
+     *
+     * @return DeliveryAddress[]
      */
     public function findGlobalBuyAddresses(int $userId): array
     {
         return $this->findBy(['createdBy' => $userId, 'supportGlobalBuy' => true]);
     }
-} 
+
+    public function save(DeliveryAddress $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(DeliveryAddress $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+}

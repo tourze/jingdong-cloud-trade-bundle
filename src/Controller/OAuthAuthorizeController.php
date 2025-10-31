@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class OAuthAuthorizeController extends AbstractController
+final class OAuthAuthorizeController extends AbstractController
 {
     public function __construct(
         private readonly AuthService $authService,
@@ -19,7 +19,7 @@ class OAuthAuthorizeController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/oauth/authorize/{id}', name: 'jingdong_pop_oauth_authorize')]
+    #[Route(path: '/oauth/authorize/{id}', name: 'jingdong_pop_oauth_authorize', methods: ['GET', 'HEAD'])]
     public function __invoke(Request $request, Account $account): Response
     {
         $redirectUri = $this->generateUrl('jingdong_pop_oauth_callback', [], UrlGeneratorInterface::ABSOLUTE_URL);

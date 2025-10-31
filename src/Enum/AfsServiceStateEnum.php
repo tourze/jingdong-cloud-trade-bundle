@@ -2,6 +2,7 @@
 
 namespace JingdongCloudTradeBundle\Enum;
 
+use Tourze\EnumExtra\BadgeInterface;
 use Tourze\EnumExtra\Itemable;
 use Tourze\EnumExtra\ItemTrait;
 use Tourze\EnumExtra\Labelable;
@@ -11,47 +12,46 @@ use Tourze\EnumExtra\SelectTrait;
 /**
  * 京东云交易售后服务状态枚举
  */
-enum AfsServiceStateEnum: string implements Itemable, Labelable, Selectable
+enum AfsServiceStateEnum: string implements Itemable, Labelable, Selectable, BadgeInterface
 {
     use ItemTrait;
     use SelectTrait;
-
     /**
      * 申请中
      */
     case APPLYING = 'APPLYING';
-    
+
     /**
      * 审核通过
      */
     case APPROVED = 'APPROVED';
-    
+
     /**
      * 审核拒绝
      */
     case REJECTED = 'REJECTED';
-    
+
     /**
      * 处理中
      */
     case PROCESSING = 'PROCESSING';
-    
+
     /**
      * 已完成
      */
     case COMPLETED = 'COMPLETED';
-    
+
     /**
      * 已取消
      */
     case CANCELLED = 'CANCELLED';
-    
+
     /**
      * 获取状态描述
      */
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::APPLYING => '申请中',
             self::APPROVED => '审核通过',
             self::REJECTED => '审核拒绝',
@@ -68,9 +68,11 @@ enum AfsServiceStateEnum: string implements Itemable, Labelable, Selectable
     {
         return $this->getDescription();
     }
-    
+
     /**
      * 获取所有状态选项（用于表单选择）
+     *
+     * @return array<string, string>
      */
     public static function getOptions(): array
     {
@@ -78,6 +80,19 @@ enum AfsServiceStateEnum: string implements Itemable, Labelable, Selectable
         foreach (self::cases() as $case) {
             $options[$case->value] = $case->getDescription();
         }
+
         return $options;
     }
-} 
+
+    public function getBadge(): string
+    {
+        return match ($this) {
+            self::APPLYING => self::WARNING,
+            self::APPROVED => self::SUCCESS,
+            self::REJECTED => self::DANGER,
+            self::PROCESSING => self::INFO,
+            self::COMPLETED => self::SUCCESS,
+            self::CANCELLED => self::SECONDARY,
+        };
+    }
+}
