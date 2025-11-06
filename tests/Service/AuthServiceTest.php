@@ -17,7 +17,6 @@ use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 
 /**
  * @internal
- * @phpstan-ignore-next-line
  */
 #[CoversClass(AuthService::class)]
 #[RunTestsInSeparateProcesses]
@@ -37,7 +36,7 @@ final class AuthServiceTest extends AbstractIntegrationTestCase
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $logger = $this->createMock(LoggerInterface::class);
 
-        $this->authService = new AuthService($this->httpClient, $this->urlGenerator, $logger); // @phpstan-ignore-line
+        $this->authService = new AuthService($this->httpClient, $this->urlGenerator, $logger);
 
         $this->account = new Account();
         $this->account->setAppKey('test_app_key');

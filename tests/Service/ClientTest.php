@@ -16,7 +16,6 @@ use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 
 /**
  * @internal
- * @phpstan-ignore integrationTestDirectInstantiation
  */
 #[CoversClass(Client::class)]
 #[RunTestsInSeparateProcesses]
@@ -39,7 +38,7 @@ final class ClientTest extends AbstractIntegrationTestCase
 
         $authService->method('getAccessToken');
 
-        $this->client = new Client($this->httpClient, $authService, $logger); // @phpstan-ignore-line
+        $this->client = new Client($this->httpClient, $authService, $logger);
 
         $this->account = new Account();
         $this->account->setAppKey('test_app_key');
@@ -76,7 +75,6 @@ final class ClientTest extends AbstractIntegrationTestCase
         $method = 'jingdong.test.api';
         $params = ['key' => 'value'];
 
-        // @phpstan-ignore-next-line
         $mockResponse = $this->createMock(ResponseInterface::class);
         /** @var InvocationMocker $responseMethod */
         $responseMethod = $mockResponse->method('toArray');
@@ -124,7 +122,6 @@ final class ClientTest extends AbstractIntegrationTestCase
         $method = 'jingdong.test.api';
         $params = ['key' => 'value'];
 
-        // @phpstan-ignore-next-line
         $mockResponse = $this->createMock(ResponseInterface::class);
         /** @var InvocationMocker $responseMethod */
         $responseMethod = $mockResponse->method('toArray');
@@ -150,7 +147,6 @@ final class ClientTest extends AbstractIntegrationTestCase
         $method = 'jingdong.test.api';
         $params = ['key' => 'value'];
 
-        // @phpstan-ignore-next-line
         $mockResponse = $this->createMock(ResponseInterface::class);
         /** @var InvocationMocker $responseMethod */
         $responseMethod = $mockResponse->method('toArray');
@@ -186,7 +182,6 @@ final class ClientTest extends AbstractIntegrationTestCase
             ],
         ];
 
-        // @phpstan-ignore-next-line
         $mockResponse = $this->createMock(ResponseInterface::class);
         /** @var InvocationMocker $responseMethod */
         $responseMethod = $mockResponse->method('toArray');
