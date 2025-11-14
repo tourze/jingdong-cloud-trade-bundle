@@ -38,7 +38,13 @@ final class ClientTest extends AbstractIntegrationTestCase
 
         $authService->method('getAccessToken');
 
-        $this->client = new Client($this->httpClient, $authService, $logger);
+        // 注册 Mock 服务到容器
+        static::getContainer()->set(HttpClientInterface::class, $this->httpClient);
+        static::getContainer()->set(LoggerInterface::class, $logger);
+        static::getContainer()->set(AuthService::class, $authService);
+
+        // 从容器中获取 Client 实例
+        $this->client = self::getService(Client::class);
 
         $this->account = new Account();
         $this->account->setAppKey('test_app_key');

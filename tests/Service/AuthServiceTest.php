@@ -36,7 +36,13 @@ final class AuthServiceTest extends AbstractIntegrationTestCase
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $logger = $this->createMock(LoggerInterface::class);
 
-        $this->authService = new AuthService($this->httpClient, $this->urlGenerator, $logger);
+        // 注册 Mock 服务到容器
+        static::getContainer()->set(HttpClientInterface::class, $this->httpClient);
+        static::getContainer()->set(UrlGeneratorInterface::class, $this->urlGenerator);
+        static::getContainer()->set(LoggerInterface::class, $logger);
+
+        // 从容器中获取 AuthService 实例
+        $this->authService = self::getService(AuthService::class);
 
         $this->account = new Account();
         $this->account->setAppKey('test_app_key');
