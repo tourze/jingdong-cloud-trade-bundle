@@ -6,17 +6,17 @@ namespace JingdongCloudTradeBundle\Tests\Controller\Admin;
 
 use JingdongCloudTradeBundle\Controller\Admin\OrderItemCrudController;
 use JingdongCloudTradeBundle\Entity\OrderItem;
+use JingdongCloudTradeBundle\Tests\AbstractEasyAdminTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\PropertyAccess\Exception\InvalidTypeException;
-use Tourze\PHPUnitSymfonyWebTest\AbstractEasyAdminControllerTestCase;
 
 /**
  * @internal
  */
 #[CoversClass(OrderItemCrudController::class)]
 #[RunTestsInSeparateProcesses]
-class OrderItemCrudControllerTest extends AbstractEasyAdminControllerTestCase
+class OrderItemCrudControllerTest extends AbstractEasyAdminTestCase
 {
     /**
      * @return OrderItemCrudController<OrderItem>

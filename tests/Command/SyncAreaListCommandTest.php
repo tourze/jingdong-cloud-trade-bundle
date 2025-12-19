@@ -31,7 +31,7 @@ final class SyncAreaListCommandTest extends AbstractCommandTestCase
         $command = self::getContainer()->get(SyncAreaListCommand::class);
 
         $application = new Application();
-        $application->add($command);
+        $application->addCommand($command);
 
         $command = $application->find('jingdong-pop:sync-area:list');
         $this->commandTester = new CommandTester($command);

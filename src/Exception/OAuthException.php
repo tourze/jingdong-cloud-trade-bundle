@@ -2,6 +2,6 @@
 
 namespace JingdongCloudTradeBundle\Exception;
 
-class OAuthException extends \RuntimeException
+final class OAuthException extends \RuntimeException
 {
 }

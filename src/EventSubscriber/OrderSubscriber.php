@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: Order::class)]
 #[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: Order::class)]
 #[WithMonologChannel(channel: 'jingdong_cloud_trade')]
-readonly class OrderSubscriber
+final readonly class OrderSubscriber
 {
     public function __construct(
         private Client $client,

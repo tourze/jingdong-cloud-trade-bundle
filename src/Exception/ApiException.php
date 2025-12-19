@@ -2,6 +2,6 @@
 
 namespace JingdongCloudTradeBundle\Exception;
 
-class ApiException extends \RuntimeException
+final class ApiException extends \RuntimeException
 {
 }

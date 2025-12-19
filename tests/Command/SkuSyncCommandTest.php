@@ -31,7 +31,7 @@ final class SkuSyncCommandTest extends AbstractCommandTestCase
         $command = self::getContainer()->get(SkuSyncCommand::class);
 
         $application = new Application();
-        $application->add($command);
+        $application->addCommand($command);
 
         $command = $application->find('jingdong:sku:sync');
         $this->commandTester = new CommandTester($command);

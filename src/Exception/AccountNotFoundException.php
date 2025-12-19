@@ -2,6 +2,6 @@
 
 namespace JingdongCloudTradeBundle\Exception;
 
-class AccountNotFoundException extends \RuntimeException
+final class AccountNotFoundException extends \RuntimeException
 {
 }

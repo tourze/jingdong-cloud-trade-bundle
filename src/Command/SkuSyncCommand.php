@@ -22,7 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: self::NAME,
     description: '同步京东商品数据'
 )]
-class SkuSyncCommand extends Command
+final class SkuSyncCommand extends Command
 {
     public const NAME = 'jingdong:sku:sync';
 
